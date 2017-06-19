@@ -1,0 +1,49 @@
+{
+    "_id": "tt1431045",
+    "imdb_id": "tt1431045",
+    "title": "Deadpool",
+    "year": "2016",
+    "synopsis": "Based upon Marvel Comics’ most unconventional anti-hero, DEADPOOL tells the origin story of former Special Forces operative turned mercenary Wade Wilson, who after being subjected to a rogue experiment that leaves him with accelerated healing powers, adopts the alter ego Deadpool. Armed with his new abilities and a dark, twisted sense of humor, Deadpool hunts down the man who nearly destroyed his life.",
+    "runtime": "108",
+    "released": 1455235200,
+    "trailer": "http://youtube.com/watch?v=ONHBaC-pfsk",
+    "certification": "R",
+    "torrents": {
+        "en": {
+            "1080p": {
+                "url": "magnet:?xt=urn:btih:6268ABCCB049444BEE76813177AA46643A7ADA88&tr=udp://glotorrents.pw:6969/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://torrent.gresille.org:80/announce&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://tracker.leechers-paradise.org:6969&tr=udp://p4p.arenabg.ch:1337&tr=udp://tracker.internetwarriors.net:1337",
+                "seed": 1145,
+                "peer": 207,
+                "size": 1771674010,
+                "filesize": "1.65 GB",
+                "provider": "YTS"
+            },
+            "720p": {
+                "url": "magnet:?xt=urn:btih:A1D0C3B0FD52A29D2487027E6B50F27EAF4912C5&tr=udp://glotorrents.pw:6969/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://torrent.gresille.org:80/announce&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://tracker.leechers-paradise.org:6969&tr=udp://p4p.arenabg.ch:1337&tr=udp://tracker.internetwarriors.net:1337",
+                "seed": 1151,
+                "peer": 503,
+                "size": 837382308,
+                "filesize": "798.59 MB",
+                "provider": "YTS"
+            }
+        }
+    },
+    "genres": [
+        "action",
+        "adventure",
+        "comedy",
+        "romance"
+    ],
+    "images": {
+        "poster": "http://image.tmdb.org/t/p/w500/pnaBBCunHuyNRE8Cn06oDRBK77e.jpg",
+        "fanart": "http://image.tmdb.org/t/p/w500/n1y094tVDFATSzkTnFxoGZ1qNsG.jpg",
+        "banner": "http://image.tmdb.org/t/p/w500/pnaBBCunHuyNRE8Cn06oDRBK77e.jpg"
+    },
+    "rating": {
+        "percentage": 82,
+        "watching": 6,
+        "votes": 38756,
+        "loved": 100,
+        "hated": 100
+    }
+}

@@ -1,0 +1,15 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="thumbnail">
+            <img [src]="movie.images ? movie.images.poster : ''">
+            <!--<img src="http://www.gr8lessons.com/images/blank.jpg">-->
+            <div class="caption row">
+                <span class="movie-title col-xs-12">{{movie.title}}</span>
+                <div class="col-xs-12">
+                    <a href="#" class="btn btn-default btn-xs pull-right" role="button"><i class="glyphicon glyphicon-heart"></i></a>
+                    <span>{{movie.year}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
