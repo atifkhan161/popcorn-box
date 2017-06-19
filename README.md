@@ -17,7 +17,7 @@ This project is based on Angular-CLI version 1.0.0.
 ## Getting started
 Use the seed via git:
 ```sh
-git clone https://github.com/DevWurm/angular-electron-seed.git my-project
+git clone https://github.com/atifkhan161/popcorn-box.git my-project
 ```
 After this change into `my-project` and run
 ```sh
@@ -46,3 +46,6 @@ Before running the tests make sure you are serving the app in a dev server via `
 
 ### Packaging releases
 Run `yarn run package:win`, `yarn run package:mac`, `yarn run package:linux` or `yarn run package:all` to build binary releases for the specified plattform(s).
+
+### Clonned from repository
+https://github.com/DevWurm/angular-electron-seed
