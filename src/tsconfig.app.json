@@ -1,18 +1,19 @@
 {
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "../out-tsc/app",
-    "module": "es2015",
-    "baseUrl": "",
-    "typeRoots": [
-        "../node_modules/@types"
-    ],
-    "types": [
-        "node"
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "../out-tsc/app",
+        "module": "es2015",
+        "baseUrl": "",
+        "typeRoots": [
+            "../node_modules/@types"
+        ],
+        "types": [
+            "node",
+            "js"
+        ]
+    },
+    "exclude": [
+        "test.ts",
+        "**/*.spec.ts"
     ]
-  },
-  "exclude": [
-    "test.ts",
-    "**/*.spec.ts"
-  ]
 }
