@@ -8,18 +8,13 @@ import 'rxjs/Rx'
 import {Movie} from '../model/movie';
 
 @Injectable()
-export class PopcornApiService {
+export class MovieApiService {
     loading:boolean;
     constructor(private http: Http){}
 
     getAllMovies(){
         this.loading = true;
         return  this.http.request('assets/movies-list.json')
-                    .map((res:Response)=> res.json());
-    }
-    getAllSeries(){
-        this.loading = true;
-        return  this.http.request('assets/shows.list.json')
                     .map((res:Response)=> res.json());
     }
 }
