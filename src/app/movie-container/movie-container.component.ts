@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core';
+
 import {Movie} from '../model/movie';
-import {MovieApiService} from '../services/movieapiservice';
+import {PopcornApiService} from '../services/popcorn-api.service';
 
 @Component({
   selector: 'movie-container',
   templateUrl: './movie-container.component.html',
   styleUrls: ['./movie-container.component.css'],
-  providers: [MovieApiService]
+  providers: [PopcornApiService]
 })
 export class MovieContainerComponent implements OnInit {
   movies: Movie[] = [];
   selectedMovie: Movie;
   vDetails: boolean = false;
-  constructor(private svc: MovieApiService) { }
+  constructor(private svc: PopcornApiService) { }
 
   ngOnInit() {
     this.svc.getAllMovies().subscribe(
