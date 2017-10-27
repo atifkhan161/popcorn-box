@@ -1,7 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpModule } from '@angular/http';import {HttpClientModule} from '@angular/common/http';
+
+
 import { RouterModule, Routes } from '@angular/router';
 import { AlertModule,TabsModule, BsDropdownModule,RatingModule } from 'ngx-bootstrap';
 
@@ -11,9 +13,11 @@ import { MovieContainerComponent } from './movie-container/movie-container.compo
 import { ItemCardComponent } from './item-card/item-card.component';
 import { TvContainerComponent } from './tv-container/tv-container.component';
 import { MovieDetailsComponent } from './movie-details/movie-details.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 export const appRoutes:Routes = [
-   { path: '', redirectTo: 'movies', pathMatch: 'full' },
+   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+   { path: 'dashboard', component: DashboardComponent},
    { path: 'movies', component: MovieContainerComponent},
    { path: 'tv-shows', component: TvContainerComponent}
 ]
@@ -25,7 +29,8 @@ export const appRoutes:Routes = [
     MovieContainerComponent,
     ItemCardComponent,
     TvContainerComponent,
-    MovieDetailsComponent
+    MovieDetailsComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
