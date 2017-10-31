@@ -30,6 +30,7 @@
     "@angular/router": "^4.0.0",
     "bootstrap": "^3.3.7",
     "bootswatch": "^3.3.7",
+    "class-transformer": "^0.1.8",
     "core-js": "^2.4.1",
     "electron-ipc-server": "^0.1.2",
     "ngx-bootstrap": "^1.7.1",

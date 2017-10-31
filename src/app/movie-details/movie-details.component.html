@@ -1,46 +1,50 @@
 <div class="col-xs-12" style="padding-bottom:10px">
-    <span class="glyphicon glyphicon-remove pull-right" aria-hidden="true" (click)="cView()"></span>
+  <span class="glyphicon glyphicon-remove pull-right" aria-hidden="true" (click)="cView()"></span>
 </div>
 <div class="col-xs-12">
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="col-xs-12">
-                <div class="thumbnail" *ngIf="isThumbnail">
-                    <img [src]="movie.images ? movie.images.fanart : ''" class="poster">
-                    <!--<img src="http://www.gr8lessons.com/images/blank.jpg">-->
-                </div>
-                <div class="thumbnail" *ngIf="!isThumbnail">
-                   <!-- <div id="popcorn-box-player" class="popcorn-box-player" #Popcornplayer style="width:100%;height:100%;"></div> -->
-                   <video id="popcorn-box-player" width="100%" height="250" controls>
-                    Your browser does not support HTML5 video.
-                  </video>
-                </div>
-                <div class="caption row">
-                    <h2>{{movie.title}} ({{movie.year}})</h2>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <h4>Ratings :
-                                <rating [(ngModel)]="movie.rating.stars" [max]="5" [readonly]="true"></rating>
-                                <span class="pull-right">{{movie.rating.percentage / 10}}</span>
-                            </h4>
-                            <h4>Votes : {{movie.rating.votes}}</h4>
-                            <p>{{movie.synopsis}}</p>
-                        </div>
-                        <div class="col-xs-12">
-                            <button class="btn btn-default" (click)="watch()">View trailer</button>
-                            <div class="btn-group" dropdown>
-                                <button dropdownToggle type="button" class="btn btn-default dropdown-toggle">Play <span class="caret"></span></button>
-                                <ul *dropdownMenu class="dropdown-menu" role="menu">
-                                    <li role="menuitem"><a class="dropdown-item" href="#">item</a></li>
-                                    <li class="divider dropdown-divider"></li>
-                                    <li role="menuitem"><a class="dropdown-item" href="#">View trailer</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="col-xs-12">
+        <div class="thumbnail" *ngIf="isThumbnail">
+          <!-- <img [src]="movie.images ? movie.images.fanart : ''" class="poster"> -->
+          <img src="http://www.gr8lessons.com/images/blank.jpg">
         </div>
+        <div class="thumbnail" *ngIf="!isThumbnail">
+          <!-- <div id="popcorn-box-player" class="popcorn-box-player" #Popcornplayer style="width:100%;height:100%;"></div> -->
+          <video id="popcorn-box-player" width="100%" height="250" controls>
+            Your browser does not support HTML5 video.
+          </video>
+        </div>
+        <div class="caption row">
+          <h2>{{movie.title}} ({{movie.year}})</h2>
+          <div class="row">
+            <div class="col-xs-12">
+              <h4>Ratings :
+                <rating [(ngModel)]="movie.rating.stars" [max]="5" [readonly]="true"></rating>
+                <span class="pull-right">{{movie.rating.percentage / 10}}</span>
+              </h4>
+              <h4>Votes : {{movie.rating.votes}}</h4>
+              <p>{{movie.synopsis}}</p>
+            </div>
+            <div class="col-xs-12">
+
+              <button class="btn btn-default">View trailer</button>
+              <div class="btn-group" dropdown>
+                <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
+                  Watch
+                  <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu" role="menu">
+                  <li role="menuitem" *ngFor="let source of sources">
+                    <a class="dropdown-item" href="javascript:function() { return false; };" (click)="watch(source)">{{source.quality}}</a>
+                  </li>
+                  <li class="divider dropdown-divider"></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
