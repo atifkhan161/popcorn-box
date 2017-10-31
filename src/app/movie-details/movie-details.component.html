@@ -5,9 +5,15 @@
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="col-xs-12">
-                <div class="thumbnail">
+                <div class="thumbnail" *ngIf="isThumbnail">
                     <img [src]="movie.images ? movie.images.fanart : ''" class="poster">
                     <!--<img src="http://www.gr8lessons.com/images/blank.jpg">-->
+                </div>
+                <div class="thumbnail" *ngIf="!isThumbnail">
+                   <!-- <div id="popcorn-box-player" class="popcorn-box-player" #Popcornplayer style="width:100%;height:100%;"></div> -->
+                   <video id="popcorn-box-player" width="100%" height="250" controls>
+                    Your browser does not support HTML5 video.
+                  </video>
                 </div>
                 <div class="caption row">
                     <h2>{{movie.title}} ({{movie.year}})</h2>
@@ -21,7 +27,7 @@
                             <p>{{movie.synopsis}}</p>
                         </div>
                         <div class="col-xs-12">
-                            <button class="btn btn-default">View trailer</button>
+                            <button class="btn btn-default" (click)="watch()">View trailer</button>
                             <div class="btn-group" dropdown>
                                 <button dropdownToggle type="button" class="btn btn-default dropdown-toggle">Play <span class="caret"></span></button>
                                 <ul *dropdownMenu class="dropdown-menu" role="menu">

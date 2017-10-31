@@ -1,6 +1,7 @@
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
 const url = require('url')
+const server = require('./server');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -30,6 +31,9 @@ function createWindow () {
     // when you should delete the corresponding element.
     win = null
   })
+
+  //create server process
+  server.createServer(app, require('electron-ipc-server'));
 }
 
 // This method will be called when Electron has finished
