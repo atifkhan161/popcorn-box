@@ -1,15 +1,28 @@
-const {app, BrowserWindow} = require('electron')
+const {
+  app,
+  BrowserWindow
+} = require('electron')
 const path = require('path')
 const url = require('url')
 const server = require('./server');
-
+const spawn = require('electron-spawn');
+var http = require('http');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
+var port = process.env.ELECTRON_WORKER_PORT,
+  host = process.env.ELECTRON_WORKER_HOST,
+  workerId = process.env.ELECTRON_WORKER_ID;
 
-function createWindow () {
+function createWindow() {
   // Create the browser window.
-  win = new BrowserWindow({width: 800, height: 600})
+  win = new BrowserWindow({
+    width: 800,
+    height: 600,
+    "web-preferences": {
+      "web-security": false
+    }
+  });
 
   // and load the index.html of the app.
   win.loadURL(url.format({
@@ -19,7 +32,7 @@ function createWindow () {
   }))
 
   // Open the DevTools when in dev mode.
-  if(process.env.NODE_ENV=='development') {
+  if (process.env.NODE_ENV == 'development') {
     win.webContents.openDevTools()
     require('devtron').install()
   }
@@ -33,7 +46,7 @@ function createWindow () {
   })
 
   //create server process
-  server.createServer(app, require('electron-ipc-server'));
+  // server.createServer(app, require('electron-ipc-server'));
 }
 
 // This method will be called when Electron has finished
@@ -54,7 +67,18 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (win === null) {
-    createWindow()
+    createWindow();
+    // var expressApp = spawn(server.createExpressServer, app, {
+    //   detached: true
+    // });
+    var server = http.createServer(function(req, res) {
+      // You can respond with a status `500` if you want to indicate that something went wrong 
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      // data passed to `electronWorkers.execute` will be available in req body 
+      req.pipe(res);
+    });
+   
+    server.listen(8787, host);
   }
 })
 

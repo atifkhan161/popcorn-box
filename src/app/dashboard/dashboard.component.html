@@ -1,9 +1,17 @@
 <div *ngIf="!isAuthenticated">
   <p>
     Authenticate to proceed!</p>
-    <h1>{{deviceCode}}</h1>
+  <h1>{{deviceCode}}</h1>
 </div>
 <div *ngIf="isAuthenticated">
 
 </div>
 
+<div class="panel panel-default">
+  <div class="panel-heading">YTS Movies</div>
+  <div class="panel-body">
+    <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" *ngFor="let movie of ytsMovies">
+      <item-card [movie]="movie" (click)="viewDetails(movie)"></item-card>
+    </div>
+  </div>
+</div>

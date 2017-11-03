@@ -14,6 +14,10 @@ import { ItemCardComponent } from './item-card/item-card.component';
 import { TvContainerComponent } from './tv-container/tv-container.component';
 import { MovieDetailsComponent } from './movie-details/movie-details.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { TvDetailComponent } from './tv-detail/tv-detail.component';
+
+import { traktService } from './services/trakt.services';
+import { ytsService } from './services/yts.service';
 
 export const appRoutes:Routes = [
    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -30,7 +34,8 @@ export const appRoutes:Routes = [
     ItemCardComponent,
     TvContainerComponent,
     MovieDetailsComponent,
-    DashboardComponent
+    DashboardComponent,
+    TvDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +50,8 @@ export const appRoutes:Routes = [
     RouterModule
   ],
   providers: [
-    
+    traktService,
+    ytsService
   ],
   bootstrap: [AppComponent]
 })
