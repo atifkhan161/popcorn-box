@@ -4,7 +4,6 @@ import { Observable } from 'rxjs/Observable';
 import { Http, Response, Headers } from '@angular/http';
 import 'rxjs/Rx'
 
-import * as ipc from 'electron-ipc-server';
 // import * as Trakt from 'trakt.tv';
 
 @Injectable()
@@ -42,7 +41,6 @@ export class traktService {
             pagination: true      // defaults to false, global pagination (see below)
         };
         // this.trakt = new Trakt(options);
-        this.client = ipc.createClient();
     }
 
     getAllMovies() {
@@ -52,7 +50,7 @@ export class traktService {
     }
     getTrendingMovies(): Promise<any> {
         this.loading = true;
-        return this.http.get(this.localServer + '/movies/trending',{headers : this.header})
+        return this.http.get('/api/movies/trending', { headers: this.header })
             .map((res: Response) => res.json()).toPromise();
         // return fetch(this.apiUrl + '/movies/trending', {
         //     mode: 'no-cors', headers: {

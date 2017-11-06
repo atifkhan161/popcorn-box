@@ -1,6 +1,7 @@
 {
   "version": "0.2.0",
   "configurations": [
+
     {
       "name": "Debug Main Process",
       "type": "node",
@@ -10,7 +11,7 @@
       "windows": {
         "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
       },
-      "args" : ["."]
+      "args" : ["src/entry.express.js"]
     }
   ]
 }

@@ -30,9 +30,9 @@ export class DashboardComponent implements OnInit {
     //   }
     // )
 
-    this.yts.getAllMovies().then(res =>{
-      self.ytsMovies = res;
-    });
+    // this.yts.getAllMovies().then(res =>{
+    //   self.ytsMovies = res;
+    // });
   }
 
 }
