@@ -13,7 +13,7 @@ let win
 
 function createWindow() {
   // Instantiate Express App
-  app.server = require('./server')();
+  app.server = require('./server');
 
   // Create the browser window.
   win = new BrowserWindow({

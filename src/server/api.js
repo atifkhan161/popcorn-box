@@ -26,7 +26,7 @@ let response = {
 
 // Get movies
 router.get('/movies/trending', (req, res) => {
-  axios.get(apiUrl + '/movies/trending')
+  axios.get(apiUrl + '/movies/trending?extended=full')
     .then(function (obj) {
       res.send(obj.data);
     })
@@ -36,7 +36,7 @@ router.get('/movies/trending', (req, res) => {
     });
 });
 
-// Get movies
+// Get device code
 router.get('/device/code', (req, res) => {
   axios.post(apiUrl + '/oauth/device/code', {
       "client_id": clientId

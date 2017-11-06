@@ -20,11 +20,10 @@
           <div class="row">
             <div class="col-xs-12">
               <h4>Ratings :
-                <rating [(ngModel)]="movie.rating.stars" [max]="5" [readonly]="true"></rating>
-                <span class="pull-right">{{movie.rating.percentage / 10}}</span>
+                <span > {{movie.rating}}</span>
               </h4>
-              <h4>Votes : {{movie.rating.votes}}</h4>
-              <p>{{movie.synopsis}}</p>
+              <h4>Votes : {{movie.votes}}</h4>
+              <p>{{movie.overview}}</p>
             </div>
             <div class="col-xs-12">
 

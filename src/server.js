@@ -1,12 +1,13 @@
-module.exports = () => {
+// module.exports = () => {
   const express = require('express');
   const bodyParser = require('body-parser');
   const path = require('path');
   const http = require('http');
   const app = express();
 
-  // API file for interacting with MongoDB
+  // API files
   const api = require('./server/api');
+  const yify = require('./server/yify');
 
   // Parsers
   app.use(bodyParser.json());
@@ -22,10 +23,11 @@ module.exports = () => {
 
   // API location
   app.use('/api', api);
+  app.use('/yify', yify);
 
   // Send all other requests to the Angular app
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../dist/index.html'));
   });
   app.listen("8787", "localhost");
-}
+// }

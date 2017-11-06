@@ -18,6 +18,7 @@ import { TvDetailComponent } from './tv-detail/tv-detail.component';
 
 import { traktService } from './services/trakt.services';
 import { ytsService } from './services/yts.service';
+import { sourcesService } from './services/sources.service';
 
 export const appRoutes:Routes = [
    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -51,7 +52,8 @@ export const appRoutes:Routes = [
   ],
   providers: [
     traktService,
-    ytsService
+    ytsService,
+    sourcesService
   ],
   bootstrap: [AppComponent]
 })
