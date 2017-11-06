@@ -7,7 +7,6 @@ const url = require('url')
 var http = require('http');
 const server = require('./server');
 
-const spawn = require('electron-spawn');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
@@ -69,9 +68,9 @@ app.on('activate', () => {
   // dock icon is clicked and there are no other windows open.
   if (win === null) {
     createWindow();
-    var expressApp = spawn(server.createExpressServer, 'bar', {
-      detached: true
-    });
+    // var expressApp = spawn(server.createExpressServer, 'bar', {
+    //   detached: true
+    // });
   }
 })
 
