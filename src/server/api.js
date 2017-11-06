@@ -25,8 +25,9 @@ let response = {
 };
 
 // Get movies
-router.get('/movies/trending', (req, res) => {
-  axios.get(apiUrl + '/movies/trending?extended=full')
+router.get('/movies/:type', (req, res) => {
+  var listType = req.params.type;
+  axios.get(apiUrl + `/movies/${listType}?extended=full&limit=50`)
     .then(function (obj) {
       res.send(obj.data);
     })

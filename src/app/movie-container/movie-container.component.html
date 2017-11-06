@@ -1,10 +1,17 @@
+<div class="row list-menu">
+  <div class="col-xs-3 pull-right">
+    <select [(ngModel)]="listBy" (change)="onlistChange()" #type class="form-control input-sm">
+      <option *ngFor="let type of selectLists" [ngValue]="type.value">{{type.key}}</option>
+    </select>
+  </div>
+</div>
 <div class="row">
-    <div [ngClass]="{ 'col-xs-8' : vDetails, 'col-xs-12': !vDetails}">
-        <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" *ngFor="let movie of movies">
-            <item-card [movie]="movie" (click)="viewDetails(movie)"></item-card>
-        </div>
+  <div [ngClass]="{ 'col-xs-8' : vDetails, 'col-xs-12': !vDetails}">
+    <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" *ngFor="let movie of movies">
+      <item-card [movie]="movie" (click)="viewDetails(movie)"></item-card>
     </div>
-    <div class="col-xs-4" *ngIf="vDetails">
-        <movie-details (closeView)="toggleView()" [movie]="selectedMovie"></movie-details>
-    </div>
+  </div>
+  <div class="col-xs-4" *ngIf="vDetails">
+    <movie-details (closeView)="toggleView()" [movie]="selectedMovie"></movie-details>
+  </div>
 </div>

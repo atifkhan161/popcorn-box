@@ -25,12 +25,17 @@ export class traktService {
         return this.http.request('assets/movies-list.json')
             .map((res: Response) => res.json());
     }
-    getTrendingMovies() {
+    getMovies(type: string) {
         this.loading = true;
-        // return this.http.get('/api/movies/trending')
+        // return this.http.get('/api/movies/' + type)
         return this.http.request('assets/trakt-movies.json')
             .map((res: Response) => {
-               return _.pluck(res.json(), 'movie');
+                if (type != "popular") {
+                    return _.pluck(res.json(), 'movie');
+                }
+                else {
+                    return res.json();
+                }
             });
     }
 
