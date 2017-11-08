@@ -15,6 +15,7 @@ export class MovieContainerComponent implements OnInit {
   selectedMovie: Movie;
   vDetails: boolean = false;
   listBy: string;
+  searchQuery: string;
   selectLists: keyValue[];
   constructor(private svc: MovieApiService, private trakt: traktService) { }
 
@@ -45,5 +46,13 @@ export class MovieContainerComponent implements OnInit {
       this.movies = resp;
       this.selectedMovie = resp[0];
     });
+  }
+  search() {
+    if (this.searchQuery) {
+      this.trakt.searchMovies(this.searchQuery).subscribe(resp => {
+        this.movies = resp;
+        this.selectedMovie = resp[0];
+      });
+    }
   }
 }

@@ -17,4 +17,7 @@ export class Movie {
     available_translations: string[];
     genres: string[];
     certification: string;
+    moviethumb?:object[];
+    movieposter?:object[];
+    moviebackground?:object[];
 }
