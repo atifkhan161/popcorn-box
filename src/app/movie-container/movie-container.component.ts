@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {Movie} from '../model/movie';
-import {MovieApiService} from '../services/movieapiservice';
+import { Movie } from '../model/movie.trakt';
+import { keyValue } from '../model/key-value';
+import { MovieApiService } from '../services/movieapiservice';
+import { traktService } from '../services/trakt.services';
 
 @Component({
   selector: 'movie-container',
@@ -12,15 +14,23 @@ export class MovieContainerComponent implements OnInit {
   movies: Movie[] = [];
   selectedMovie: Movie;
   vDetails: boolean = false;
-  constructor(private svc: MovieApiService) { }
+  listBy: string;
+  searchQuery: string;
+  selectLists: keyValue[];
+  constructor(private svc: MovieApiService, private trakt: traktService) { }
 
   ngOnInit() {
-    this.svc.getAllMovies().subscribe(
-      data => {
-        this.movies = data;
-        this.selectedMovie = data[0];
-      }
-    )
+    this.listBy = "popular";
+    this.selectLists = [];
+    this.selectLists.push(new keyValue("trending","trending"));
+    this.selectLists.push(new keyValue("popular","popular"));
+    this.selectLists.push(new keyValue("played","played"));
+    this.selectLists.push(new keyValue("watched","watched"));
+    this.selectLists.push(new keyValue("collected","collected"));
+    this.trakt.getMovies(this.listBy).subscribe(resp => {
+      this.movies = resp;
+      this.selectedMovie = resp[0];
+    });
   }
 
   viewDetails(movie: Movie) {
@@ -30,5 +40,19 @@ export class MovieContainerComponent implements OnInit {
 
   toggleView() {
     this.vDetails = false;
+  }
+  onlistChange() {
+    this.trakt.getMovies(this.listBy).subscribe(resp => {
+      this.movies = resp;
+      this.selectedMovie = resp[0];
+    });
+  }
+  search() {
+    if (this.searchQuery) {
+      this.trakt.searchMovies(this.searchQuery).subscribe(resp => {
+        this.movies = resp;
+        this.selectedMovie = resp[0];
+      });
+    }
   }
 }

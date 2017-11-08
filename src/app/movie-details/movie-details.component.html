@@ -6,8 +6,10 @@
     <div class="panel-body">
       <div class="col-xs-12">
         <div class="thumbnail" *ngIf="isThumbnail">
-          <!-- <img [src]="movie.images ? movie.images.fanart : ''" class="poster"> -->
-          <img src="http://www.gr8lessons.com/images/blank.jpg">
+          <img [src]="movie.moviebackground[0].url" *ngIf="movie.movieposter; else blankImage">
+          <ng-template #blankImage>
+              <img src="assets/images/blank_mov.jpg">
+          </ng-template>
         </div>
         <div class="thumbnail" *ngIf="!isThumbnail">
           <!-- <div id="popcorn-box-player" class="popcorn-box-player" #Popcornplayer style="width:100%;height:100%;"></div> -->
@@ -20,11 +22,10 @@
           <div class="row">
             <div class="col-xs-12">
               <h4>Ratings :
-                <rating [(ngModel)]="movie.rating.stars" [max]="5" [readonly]="true"></rating>
-                <span class="pull-right">{{movie.rating.percentage / 10}}</span>
+                <span > {{movie.rating}}</span>
               </h4>
-              <h4>Votes : {{movie.rating.votes}}</h4>
-              <p>{{movie.synopsis}}</p>
+              <h4>Votes : {{movie.votes}}</h4>
+              <p>{{movie.overview}}</p>
             </div>
             <div class="col-xs-12">
 

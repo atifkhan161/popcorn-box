@@ -1,9 +1,10 @@
-import { Component, OnInit, OnChanges, OnDestroy, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, Input, Output, EventEmitter, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
 import * as webtorrent from 'webtorrent';
-
-import { Movie } from '../model/movie';
+import { _ } from 'underscore';
+import { Movie } from '../model/movie.trakt';
 import { Source } from '../model/sources';
 
+import { sourcesService } from '../services/sources.service';
 
 @Component({
   selector: 'movie-details',
@@ -18,18 +19,26 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
   client: webtorrent;
   isThumbnail: boolean;
   sources: Source[];
-  constructor() { }
+  constructor(private sourcesService: sourcesService) { }
 
   ngOnInit() {
+    if (this.client) {
+      this.client.destroy();
+    }
     this.isThumbnail = true;
-    this.movie.rating.stars = this.movie.rating.percentage / 20;
     this.client = new webtorrent();
     this.sources = [];
     //Load sources
     this.loadSources();
   }
-  ngOnChanges(changes) {
-    this.movie.rating.stars = this.movie.rating.percentage / 20;
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['movie'].previousValue && changes['movie'].previousValue != changes['movie'].currentValue) {
+      this.isThumbnail = true;
+      this.client = new webtorrent();
+      this.sources = [];
+      //Load sources
+      this.loadSources();
+    }
   }
 
   cView() {
@@ -51,15 +60,9 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
     }
   }
   loadSources() {
-    var quality = this.movie.torrents["en"];
-    let fullHd = new Source();
-    fullHd.fillFromJSON(quality["1080p"]);
-    fullHd.quality = "1080p";
-    this.sources.push(fullHd);
-    let Hd = new Source();
-    Hd.fillFromJSON(quality["720p"]);
-    Hd.quality = "720p";
-    this.sources.push(Hd);
+    this.sourcesService.getYifyMovieSources(this.movie.ids.imdb).subscribe(res => {
+      this.sources = res["torrents"];
+    });
   }
 
   ngOnDestroy() {
