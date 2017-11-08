@@ -27,29 +27,29 @@ export class traktService {
     }
     getMovies(type: string) {
         this.loading = true;
-        // return this.http.get('/api/movies/' + type)
-        return this.http.request('assets/trakt-movies.json')
+        return this.http.get('/api/movies/' + type)
+        // return this.http.request('assets/trakt-movies.json')
             .map((res: Response) => {
-                if (type != "popular") {
-                    return _.pluck(res.json(), 'movie');
-                }
-                else {
+                // if (type != "popular") {
+                //     return _.pluck(res.json(), 'movie');
+                // }
+                // else {
                     return res.json();
-                }
+                // }
             });
     }
 
     searchMovies(query:string, type: string="popular") {
         this.loading = true;
-        // return this.http.get('/api/movies/search/' + query)
-            return this.http.request('assets/trakt-movies.json')
+        return this.http.get('/api/movies/search/' + query)
+            // return this.http.request('assets/trakt-movies.json')
             .map((res: Response) => {
-                if (type != "popular") {
-                    return _.pluck(res.json(), 'movie');
-                }
-                else {
+                // if (type != "popular") {
+                //     return _.pluck(res.json(), 'movie');
+                // }
+                // else {
                     return res.json();
-                }
+                // }
             });
     }
 

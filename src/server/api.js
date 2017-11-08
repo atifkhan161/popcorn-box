@@ -25,6 +25,7 @@ const sendError = (err, res) => {
 
 //Cache instance after axios config
 axios = cachios.create(axios);
+const cacheDuration = 15 *60; //15 min
 // Response handling
 let response = {
   status: 200,
@@ -35,7 +36,7 @@ let response = {
 // Get movies
 router.get('/movies/:type', (req, res) => {
   var listType = req.params.type;
-  axios.get(apiUrl + `/movies/${listType}?extended=full&limit=50`)
+  axios.get(apiUrl + `/movies/${listType}?extended=full&limit=50`, { ttl: cacheDuration })
     .then(function (obj) {
       // res.send(obj.data);
       _mapImages(obj.data, res);
@@ -48,7 +49,7 @@ router.get('/movies/:type', (req, res) => {
 // Get movies by query params
 router.get('/movies/search/:query', (req, res) => {
   var query = req.params.query;
-  axios.get(apiUrl + `/movies/popular?extended=full&limit=50&query=${query}`)
+  axios.get(apiUrl + `/movies/popular?extended=full&limit=50&query=${query}`, { ttl: cacheDuration })
     .then(function (obj) {
       _mapImages(obj.data, res);
     })
@@ -70,19 +71,6 @@ router.get('/device/code', (req, res) => {
       sendError(error, res);
     });
 });
-// Get movie image
-router.get('/movie/image/:imdb', (req, res) => {
-  var query = req.params.query;
-  axios.post(apiUrl + '/oauth/device/code', {
-      "client_id": clientId
-    })
-    .then(obj => {
-      res.send(obj.data);
-    })
-    .catch(function (error) {
-      sendError(error, res);
-    });
-});
 
 function _mapImages(data, res) {
 
@@ -94,7 +82,7 @@ function _mapImages(data, res) {
     } else {
       imdbId = obj.ids.imdb;
     }
-    promises.push(axios.get(fanartUrl + `movies/${imdbId}?api_key=${fanartKey}`));
+    promises.push(axios.get(fanartUrl + `movies/${imdbId}?api_key=${fanartKey}`, { ttl: cacheDuration }));
   });
   _promise_all(promises).then(function (args) {
     let allResult = _.pluck(args, 'data');
