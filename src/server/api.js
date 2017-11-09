@@ -59,6 +59,43 @@ router.get('/movies/search/:query', (req, res) => {
     });
 });
 
+// Get shows
+router.get('/shows/:type', (req, res) => {
+  var listType = req.params.type;
+  axios.get(apiUrl + `/shows/${listType}?extended=full&limit=50`, { ttl: cacheDuration })
+    .then(function (obj) {
+      res.send(obj.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.send(error);
+    });
+});
+// Get shows episodes
+router.get('/shows/:imdb', (req, res) => {
+  var imdb = req.params.imdb;
+  axios.get(apiUrl + `/shows/${imdb}?extended=episodes`, { ttl: cacheDuration })
+    .then(function (obj) {
+      res.send(obj.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.send(error);
+    });
+});
+// Get shows by query params
+router.get('/movies/search/:query', (req, res) => {
+  var query = req.params.query;
+  axios.get(apiUrl + `/shows/popular?extended=full&limit=50&query=${query}`, { ttl: cacheDuration })
+    .then(function (obj) {
+      res.send(obj.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.send(error);
+    });
+});
+
 // Get device code
 router.get('/device/code', (req, res) => {
   axios.post(apiUrl + '/oauth/device/code', {

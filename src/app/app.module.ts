@@ -11,20 +11,23 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { MovieContainerComponent } from './movie-container/movie-container.component';
 import { ItemCardComponent } from './item-card/item-card.component';
+import { ShowCardComponent } from './show-card/show-card.component';
 import { TvContainerComponent } from './tv-container/tv-container.component';
 import { MovieDetailsComponent } from './movie-details/movie-details.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { TvDetailComponent } from './tv-detail/tv-detail.component';
 
 import { traktService } from './services/trakt.services';
 import { ytsService } from './services/yts.service';
+import { AppStorageService } from './services/app.storage';
 import { sourcesService } from './services/sources.service';
+import { ShowDetailsComponent } from './show-details/show-details.component';
 
 export const appRoutes:Routes = [
    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
    { path: 'dashboard', component: DashboardComponent},
    { path: 'movies', component: MovieContainerComponent},
-   { path: 'tv-shows', component: TvContainerComponent}
+   { path: 'tv-shows', component: TvContainerComponent},
+   { path: 'show-details', component: ShowDetailsComponent}
 ]
 
 @NgModule({
@@ -36,7 +39,8 @@ export const appRoutes:Routes = [
     TvContainerComponent,
     MovieDetailsComponent,
     DashboardComponent,
-    TvDetailComponent
+    ShowDetailsComponent,
+    ShowCardComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +57,8 @@ export const appRoutes:Routes = [
   providers: [
     traktService,
     ytsService,
-    sourcesService
+    sourcesService,
+    AppStorageService
   ],
   bootstrap: [AppComponent]
 })

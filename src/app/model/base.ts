@@ -12,3 +12,9 @@ export interface Ids {
     imdb: string;
     tmdb: number;
 }
+
+export interface Airs {
+    day: string;
+    time: string;
+    timezone: string;
+}
