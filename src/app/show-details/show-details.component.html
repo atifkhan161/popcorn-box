@@ -1,1 +1,136 @@
-<h1>{{show.title}}</h1>
+<div class="row Item">
+  <div class="col-sm-12 Item--background" [ngStyle]="{'background-image': 'url(' + showBackground + ')'}">
+    <div class="col-sm-6 Item--image">
+      <div class="Item--poster-container">
+        <div class="Item--play"></div>
+        <img class="Item--poster" height="350px" width="233px" role="presentation" [src]="show.tvposter[0].url">
+      </div>
+      <div class="Item--loading-status">
+      </div>
+    </div>
+    <div class="Movie col-sm-6">
+      <h1 class="row-margin" id="title">{{show.title}}</h1>
+      <div class="row">
+        <span class="col-sm-9" id="genres">
+          <h6>
+            <span *ngFor="let genre of show.genres" class="badge badge-primary"> {{genre}}</span>
+          </h6>
+        </span>
+      </div>
+      <h6 class="row-margin" id="summary">{{show.overview}}</h6>
+      <div class="row row-margin row-center Item--details">
+        <div class="col-sm-5">
+          <div class="Rating">
+            <a class="rating-number">{{show.rating}}</a>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <a></a>
+        </div>
+        <div class="col-sm-2 row-center">
+          <i class="ion-magnet"></i>
+          <div id="magnetPopoverOpen" class="Movie--status" style="background-color: red;"></div>
+          <!-- react-empty: 1144 -->
+        </div>
+        <div class="col-sm-3 row-center">
+          <i id="trailerPopoverOpen" class="ion-videocamera"></i>
+          <!-- react-empty: 1219 -->
+        </div>
+      </div>
+    </div>
+    <div class="Item--overlay"></div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-9">
+    <div class="col-xs-12 season-container">
+      <h4>Seasons:</h4>
+      <div class="col-xs-3" *ngFor="let season of show.seasons" (click)="selectSeason(season);">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="thumbnail">
+              <img [src]="getSeasonPoster(season)">
+              <div class="caption row">
+                <span class="movie-title col-xs-12">Season {{season.number}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 season-container">
+      <h4>Episode:</h4>
+      <div class="col-xs-3" *ngFor="let episode of selectedSeason.episodes" (click)="selectEpisode(episode);">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="thumbnail">
+              <img [src]="getSeasonPoster(selectedSeason)">
+              <div class="caption row">
+                <span class="movie-title col-xs-12">Ep
+                  <span>{{episode.number}}</span>
+                  <span>{{episode.title}}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-3">
+    <div class="panel panel-default">
+      <div class="panel-body player-body">
+        <div class="thumbnail">
+          <video id="popcorn_show_player" width="100%" height="250" controls>
+            Your browser does not support HTML5 video.
+          </video>
+          <!-- <videojs [idx]="show_player" [url]="videoUrl"></videojs> -->
+        </div>
+        <ul>
+          <li>
+            <h3>Season overview:</h3>
+          </li>
+          <li>
+            <h6>Sheriff's deputy Rick Grimes awakens from a coma to find a post-apocalyptic world dominated by flesh-eating zombies.
+              He sets out to find his family and encounters many other survivors along the way.</h6>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <h3>Episode overview:</h3>
+          </li>
+          <li>
+            <!-- <h6>{{popcornTorrent.synopsis}}</h6> -->
+          </li>
+        </ul>
+        <accordion>
+          <accordion-group heading="Eztv">
+            <div class="list-group Show--list-group">
+              <a class="list-group-item" *ngFor="let torr of eztvTorrent" (click)="watch(torr);">
+                {{torr.title}}
+              </a>
+            </div>
+          </accordion-group>
+          <accordion-group heading="Popcorn">
+            <div class="list-group Show--list-group">
+              <a class="list-group-item" (click)="watch(torr);">
+                {{popcornTorrent.title}}
+              </a>
+            </div>
+          </accordion-group>
+          <accordion-group heading="Idope">
+            <div class="list-group Show--list-group">
+              <a class="list-group-item" *ngFor="let torr of idopeResult" (click)="watch(torr);">
+                {{torr.name}}
+              </a>
+            </div>
+          </accordion-group>
+          <accordion-group heading="Streams">
+
+          </accordion-group>
+
+        </accordion>
+      </div>
+    </div>
+  </div>
+</div>

@@ -67,6 +67,19 @@ export class traktService {
                 // }
             });
     }
+    getShowDetails(imdb: string) {
+        this.loading = true;
+        // return this.http.get('/api/shows/' + imdb + '/seasons')
+        return this.http.request('assets/trakt.seasons.json')
+            .map((res: Response) => {
+                // if (type != "popular") {
+                //     return _.pluck(res.json(), 'movie');
+                // }
+                // else {
+                return res.json();
+                // }
+            });
+    }
 
     searchShows(query: string, type: string = "popular") {
         this.loading = true;

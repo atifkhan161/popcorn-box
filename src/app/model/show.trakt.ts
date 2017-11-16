@@ -1,4 +1,7 @@
-import {baseModel, Ids, Airs} from './base';
+import {baseModel, Ids, Airs, 
+        Seasonposter, Hdtvlogo, Characterart, Seasonthumb, 
+        Clearlogo, Hdclearart, Tvposter, Showbackground, 
+        Tvthumb, Clearart, Tvbanner, Seasonbanner, Season} from './base';
 
 export class Show {
     title: string;
@@ -21,4 +24,19 @@ export class Show {
     available_translations: string[];
     genres: string[];
     aired_episodes: number;
+    name: string;
+    thetvdb_id: string;
+    seasonposter: Seasonposter[];
+    hdtvlogo: Hdtvlogo[];
+    characterart: Characterart[];
+    seasonthumb: Seasonthumb[];
+    clearlogo: Clearlogo[];
+    hdclearart: Hdclearart[];
+    tvposter: Tvposter[];
+    showbackground: Showbackground[];
+    tvthumb: Tvthumb[];
+    clearart: Clearart[];
+    tvbanner: Tvbanner[];
+    seasonbanner: Seasonbanner[];
+    seasons?: Season[];
 }

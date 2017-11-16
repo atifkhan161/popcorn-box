@@ -1,7 +1,7 @@
 <div class="panel panel-default">
   <div class="panel-body">
       <div class="thumbnail">
-          <img [src]="show.showposter[0].url" *ngIf="show.showposter; else blankImage">
+          <img [src]="show.tvposter[0].url" *ngIf="show.tvposter; else blankImage">
           <ng-template #blankImage>
               <img src="assets/images/blank_mov.jpg">
           </ng-template>
