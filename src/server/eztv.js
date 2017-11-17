@@ -41,7 +41,19 @@ router.get('/popcorn/:id', (req, res) => {
   var imdbId = req.params.id;
   axios.get(popcornApiUrl + '/show/' + imdbId)
   .then(function (obj) {
-    res.send(obj.data);
+    let flatData = obj.data;
+    flatData.episodes = _.map(obj.data.episodes, episode => {
+      let torrents = [];
+      let keys = _.allKeys(episode.torrents);
+      _.forEach(keys, key => {
+        let torrent = episode.torrents[key];
+        torrent.quality = key;
+        torrents.push(torrent);
+      });
+      episode.torrents = torrents;
+      return episode;
+    });
+    res.send(flatData);
   })
   .catch(function (error) {
     res.send(error);

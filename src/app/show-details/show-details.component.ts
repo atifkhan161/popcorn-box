@@ -27,6 +27,7 @@ export class ShowDetailsComponent implements OnInit {
   eztvTorrent: any;
   popcornTorrents: any;
   popcornTorrent: any;
+  file:any;
   constructor(private trakt: traktService, private showService: ShowsApiService) { }
 
   ngOnInit() {
@@ -77,10 +78,26 @@ export class ShowDetailsComponent implements OnInit {
     if (source.magnet_url) {
       url = source.magnet_url;
     }
-    else {
-      url = this.showService.formMagnetUrl(source.info_hash, source.name);
+    else if (source.url) {
+      url= source.url;
     }
-    this.client.add(url, this.fetchSuccess);
+    else {
+      // url = this.showService.formMagnetUrl(source.info_hash, source.name);
+      url = source.info_hash;
+    }
+    this.client.add(url, torrent => {
+      // Torrents can contain many files. Let's use the .mp4 file
+      this.file = torrent.files.find(function (file) {
+        let isVideo = false;
+        if (file.name.endsWith('.avi') || file.name.endsWith('.mkv') || file.name.endsWith('.mp4')) {
+          isVideo = true;
+        }
+        return isVideo;
+      });
+      if (this.file) {
+        this.file.renderTo('video#popcorn_show_player');
+      }
+    });
   }
   fetchSuccess(torrent) {
     let self = this;
