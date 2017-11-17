@@ -9,6 +9,7 @@
     "express": "concurrently \"webpack --watch\" \"electron src/entry.express.js\"",
     "ng": "ng",
     "build": "webpack",
+    "watch": "webpack --watch",
     "test": "karma start ./karma.conf.js",
     "lint": "ng lint",
     "e2e": "protractor ./protractor.conf.js",
@@ -29,6 +30,7 @@
     "@angular/platform-browser": "^4.0.0",
     "@angular/platform-browser-dynamic": "^4.0.0",
     "@angular/router": "^4.0.0",
+    "angular-io-slimscroll": "^1.2.11",
     "axios": "^0.17.0",
     "bluebird": "^3.5.1",
     "bootstrap": "^3.3.7",
@@ -40,6 +42,7 @@
     "rxjs": "^5.1.0",
     "trakt.tv": "^6.0.1",
     "underscore": "^1.8.3",
+    "video.js": "^6.2.8",
     "webtorrent": "^0.98.20",
     "zone.js": "^0.8.4"
   },

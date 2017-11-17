@@ -8,6 +8,7 @@
   // API files
   const api = require('./server/api');
   const yify = require('./server/yify');
+  const eztv = require('./server/eztv');
 
   // Parsers
   app.use(bodyParser.json());
@@ -24,6 +25,7 @@
   // API location
   app.use('/api', api);
   app.use('/yify', yify);
+  app.use('/eztv', eztv);
 
   // Send all other requests to the Angular app
   app.get('*', (req, res) => {

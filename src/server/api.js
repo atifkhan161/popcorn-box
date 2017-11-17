@@ -4,6 +4,7 @@ let axios = require('axios');
 const cachios = require('cachios');
 const _ = require('underscore');
 var Promise = require("bluebird");
+var idope = require('idope-search');
 
 var clientId = "42ee8abf7aa0c5c2d275a81877a323dafe105b821dec2785f848bd3d9bf7ccb7";
 var clientSecret = "37c4043b6481b17fd95f8f7cacec18ad21c907296458cbeabfefc824de8b148d";
@@ -25,7 +26,7 @@ const sendError = (err, res) => {
 
 //Cache instance after axios config
 axios = cachios.create(axios);
-const cacheDuration = 15 *60; //15 min
+const cacheDuration = 15 * 60; //15 min
 // Response handling
 let response = {
   status: 200,
@@ -36,7 +37,9 @@ let response = {
 // Get movies
 router.get('/movies/:type', (req, res) => {
   var listType = req.params.type;
-  axios.get(apiUrl + `/movies/${listType}?extended=full&limit=50`, { ttl: cacheDuration })
+  axios.get(apiUrl + `/movies/${listType}?extended=full&limit=50`, {
+      ttl: cacheDuration
+    })
     .then(function (obj) {
       // res.send(obj.data);
       _mapImages(obj.data, res);
@@ -49,12 +52,58 @@ router.get('/movies/:type', (req, res) => {
 // Get movies by query params
 router.get('/movies/search/:query', (req, res) => {
   var query = req.params.query;
-  axios.get(apiUrl + `/movies/popular?extended=full&limit=50&query=${query}`, { ttl: cacheDuration })
+  axios.get(apiUrl + `/movies/popular?extended=full&limit=50&query=${query}`, {
+      ttl: cacheDuration
+    })
     .then(function (obj) {
       _mapImages(obj.data, res);
     })
     .catch(function (error) {
       console.log(error);
+      res.send(error);
+    });
+});
+
+// Get shows
+router.get('/shows/:type', (req, res) => {
+  var listType = req.params.type;
+  axios.get(apiUrl + `/shows/${listType}?extended=full&limit=50`, {
+      ttl: cacheDuration
+    })
+    .then(function (obj) {
+      // res.send(obj.data);
+      _mapShowsImages(obj.data, res);
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.send(error);
+    });
+});
+// Get shows episodes
+router.get('/shows/:imdb/seasons', (req, res) => {
+  var imdb = req.params.imdb;
+  axios.get(apiUrl + `/shows/${imdb}/seasons?extended=episodes`, {
+      ttl: cacheDuration
+    })
+    .then(function (obj) {
+      res.send(obj.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.send(error);
+    });
+});
+// Get shows by query params
+router.get('/shows/search/:query', (req, res) => {
+  var query = req.params.query;
+  axios.get(apiUrl + `/shows/popular?extended=full&limit=50&query=${query}`, {
+      ttl: cacheDuration
+    })
+    .then(function (obj) {
+      // res.send(obj.data);
+      _mapShowsImages(obj.data, res);
+    })
+    .catch(function (error) {
       res.send(error);
     });
 });
@@ -72,6 +121,19 @@ router.get('/device/code', (req, res) => {
     });
 });
 
+//Idope Search
+router.post('/idope', (req, res) => {
+  var query = req.body.query;
+  
+  axios.get('https://idope.se/search/' + query)
+  .then(function (obj) {
+    res.send(obj.data);
+  })
+  .catch(function (error) {
+    res.send(error);
+  });
+});
+
 function _mapImages(data, res) {
 
   let promises = [];
@@ -82,7 +144,9 @@ function _mapImages(data, res) {
     } else {
       imdbId = obj.ids.imdb;
     }
-    promises.push(axios.get(fanartUrl + `movies/${imdbId}?api_key=${fanartKey}`, { ttl: cacheDuration }));
+    promises.push(axios.get(fanartUrl + `movies/${imdbId}?api_key=${fanartKey}`, {
+      ttl: cacheDuration
+    }));
   });
   _promise_all(promises).then(function (args) {
     let allResult = _.pluck(args, 'data');
@@ -109,6 +173,48 @@ function _mapImages(data, res) {
       return mov;
     });
     res.send(movies);
+  });
+}
+
+function _mapShowsImages(data, res) {
+
+  let promises = [];
+  _.forEach(data, function (obj) {
+    var tvdbId = "";
+    if (_.has(obj, 'show')) {
+      tvdbId = obj.show.ids.tvdb;
+    } else {
+      tvdbId = obj.ids.tvdb;
+    }
+    promises.push(axios.get(fanartUrl + `tv/${tvdbId}?api_key=${fanartKey}`, {
+      ttl: cacheDuration
+    }));
+  });
+  _promise_all(promises).then(function (args) {
+    let allResult = _.pluck(args, 'data');
+    var shows = _.map(data, function (tv) {
+      var images = _.filter(allResult, function (obj) {
+        if (!obj) {
+          return false;
+        }
+        var tvdbId = "";
+        if (_.has(tv, 'show')) {
+          tvdbId = tv.show.ids.tvdb;
+        } else {
+          tvdbId = tv.ids.tvdb;
+        }
+        return obj.thetvdb_id == tvdbId;
+      });
+      if (images) {
+        if (_.has(tv, 'show')) {
+          tv = _.extend(tv.show, images[0]);
+        } else {
+          tv = _.extend(tv, images[0]);
+        }
+      }
+      return tv;
+    });
+    res.send(shows);
   });
 }
 //Promise all
