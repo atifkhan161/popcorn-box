@@ -9,6 +9,7 @@
   const api = require('./server/api');
   const yify = require('./server/yify');
   const eztv = require('./server/eztv');
+  const scrape = require('./server/scrape.sources');
 
   // Parsers
   app.use(bodyParser.json());
@@ -26,6 +27,7 @@
   app.use('/api', api);
   app.use('/yify', yify);
   app.use('/eztv', eztv);
+  app.use('/scrape', scrape);
 
   // Send all other requests to the Angular app
   app.get('*', (req, res) => {
