@@ -30,10 +30,12 @@ router.post('/movie', (req, res) => {
   var movie = req.body;
   let urls = [];
   sources.forEach(source => {
-    let url = source.getMovie(movie);
-    if (url) {
-      urls.push(url);
-    }
+    source.getMovie(movie).then(function(srcs){
+      if (srcs && srcs.length > 0) {
+        urls.push(srcs);
+      }
+      res.send(_.flatten(urls));
+    });
   });
 });
 
