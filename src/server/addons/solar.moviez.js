@@ -1,10 +1,7 @@
 let axios = require('axios');
 let _ = require('underscore');
-const Promise = require("bluebird");
+// const Promise = require("bluebird");
 const cheerio = require('cheerio');
-
-let async = require('asyncawait/async');
-let await = require('asyncawait/await');
 
 let self = this;
 self.domains = ['solarmoviez.to'];
@@ -17,14 +14,8 @@ self.token_link = '/ajax/movie_token?eid=';
 self.source_link = '/ajax/movie_sources/';
 
 function Solar() {
-  //Loads html page
-  const _fetchHtml = function (url) {
-    let res = await (axios.get(url));
-    return res.data;
-  };
-
   //Fetch the Homepage url of the movie
-  const _fetchHomePage = async(function (url, movie) {
+  const _fetchHomePage = async function (url, movie) {
     return axios.get(url).then(resp => {
       let $ = cheerio.load(resp.data);
       let movieHome = {};
@@ -48,10 +39,10 @@ function Solar() {
     }).catch(err=>{
       return [];
     });
-  });
+  };
 
   //Fetch the Homepage url of the movie
-  const _fetchSourcesIds = function (url) {
+  const _fetchSourcesIds = async function(url) {
     return axios.get(url).then(resp => {
       let $ = cheerio.load(resp.data.html);
       let servers = [];
@@ -68,7 +59,7 @@ function Solar() {
       return [];
     });
   };
-  const _fetchMovieToken = function (url) {
+  async function _fetchMovieToken(url) {
     return axios.get(url).then(resp => {
       return {
         x: resp.data.match(/\_x=['\"]([^\"']+)/)[1],
@@ -78,7 +69,7 @@ function Solar() {
       return '';
     });
   }
-  const _fetchMovieSource = function (url) {
+  const _fetchMovieSource = async function (url) {
     return axios.get(url).then(resp => {
       let sources = [];
       if (resp.data && resp.data.playlist && resp.data.playlist.length > 0) {
@@ -128,37 +119,46 @@ function Solar() {
         });
       });
     },
-    getMovie: async(function(movie) {
+    getMovie: async function (movie) {
       let returnUrls = [];
       //Fetchj homepage of movie
-      let homePage = await(_fetchHomePage(self.base_link + self.search_link + movie.title.replace(/ /g, "+") + ".html", movie));
+      let homePage = await _fetchHomePage(self.base_link + self.search_link + movie.title.replace(/ /g, "+") + ".html", movie);
       if(!homePage.dataId){
         return returnUrls;
       }
       //Load souces 
       let dataUrl = self.base_link + self.server_link + homePage.dataId;
-      let souceServers = await(_fetchSourcesIds(dataUrl));
+      let souceServers = await _fetchSourcesIds(dataUrl);
       if (!souceServers || souceServers.length == 0){
         return returnUrls;
       }
-      let mapSourceUrls = souceServers.map(source => {
+      let mapSourceUrls = await souceServers.map(async( source) => {
         let tokenUrl = self.base_link + self.token_link + source.id + '&mid=' + homePage.dataId;
-        let movieToken = await(_fetchMovieToken(tokenUrl));
+        let movieToken = await _fetchMovieToken(tokenUrl);
         if (!movieToken){
           return [];
         }
         let movieSourceUrl = self.base_link + self.source_link + source.id + '?x=' + movieToken.x + '&y=' + movieToken.y;
-        let movieSource = await(_fetchMovieSource(movieSourceUrl));
+        let movieSource = await _fetchMovieSource(movieSourceUrl);
         if (_.isEmpty(movieSource)){
           return [];
         }
         return movieSource;
       });
-      returnUrls = _.filter(mapSourceUrls, url=>{
-        return !_.isEmpty(url);
+      returnUrls = await Promise.all(mapSourceUrls);
+      returnUrls = _.filter(_.flatten(returnUrls), url=>{
+        if (_.isEmpty(url)) {
+          return false;
+        }
+        let keys = _.keys(url);
+        return _.contains(keys, "file");
       });
-      return _.flatten(returnUrls);
-    })
+      returnUrls = _.map(returnUrls, url=>{
+        url.provider = "Solar Moviez";
+        return url;
+      });
+      return returnUrls;
+    }
   }
 }
 

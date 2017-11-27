@@ -14,12 +14,12 @@ import { sourcesService } from '../services/sources.service';
 export class MovieDetailsComponent implements OnInit, OnChanges {
   @Input() movie: Movie;
   @Output() closeView = new EventEmitter<boolean>();
-  @ViewChild('Popcornplayer') player: ElementRef;
-
+  player: any;
   client: webtorrent;
   isThumbnail: boolean;
   sources: Source[];
-  constructor(private sourcesService: sourcesService) { }
+  streamResult: any;
+  constructor(private sourcesService: sourcesService, private elRef: ElementRef) { }
 
   ngOnInit() {
     if (this.client) {
@@ -30,6 +30,8 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
     this.sources = [];
     //Load sources
     this.loadSources();
+
+    this.player = this.elRef.nativeElement.querySelector('.popcorn-box-player');
   }
   ngOnChanges(changes: SimpleChanges) {
     if (changes['movie'].previousValue && changes['movie'].previousValue != changes['movie'].currentValue) {
@@ -60,12 +62,36 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
     }
   }
   loadSources() {
+    //Popcorn Sources
     this.sourcesService.getYifyMovieSources(this.movie.ids.imdb).subscribe(res => {
       this.sources = res["torrents"];
     });
+
+    this.refreshStream();
+  }
+  refreshStream() {
+    //Streams
+    this.streamResult = [];
+    this.sourcesService.getMovieStreams(this.movie).subscribe(res => {
+      this.streamResult.push({
+        "file": "https://storage.googleapis.com/glassy-courage-186317.appspot.com/jax/20.11.17/A01/Valerian.and.the.City.of.a.Thousand.Planets.2017.720p.KORSUB.HDRip.x264.AAC2.0-STUTTERSHIT.mp4",
+        "type": "mp4"
+      });
+      this.streamResult = res;
+    });
+  }
+  watchStream(watchStream) {
+    this.isThumbnail = false;
+    let s = document.createElement("source");
+    s.type = watchStream.type;
+    s.src = watchStream.file;
+    this.player.appendChild(s);
+    this.player.play();
   }
 
   ngOnDestroy() {
-    this.client.destroy();
+    if (!this.client.destroyed) {
+      this.client.destroy();
+    }
   }
 }

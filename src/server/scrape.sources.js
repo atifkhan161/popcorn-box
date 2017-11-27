@@ -26,7 +26,7 @@ let response = {
 };
 
 // Get movies
-router.post('/movie', (req, res) => {
+router.post('/movie',async (req, res) => {
   var movie = req.body;
   let urls = [];
   sources.forEach(source => {
