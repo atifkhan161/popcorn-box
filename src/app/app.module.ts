@@ -7,6 +7,7 @@ import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
 import { AlertModule,TabsModule, BsDropdownModule,RatingModule, AccordionModule, TooltipModule  } from 'ngx-bootstrap';
 import { SlimScroll } from 'angular-io-slimscroll';
+import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -56,7 +57,8 @@ export const appRoutes:Routes = [
     BsDropdownModule.forRoot(),
     RatingModule.forRoot(),
     AccordionModule.forRoot(),
-    TooltipModule.forRoot()
+    TooltipModule.forRoot(),
+    SlimLoadingBarModule.forRoot()
   ],
   exports: [
     RouterModule
