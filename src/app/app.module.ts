@@ -1,13 +1,14 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpModule, XHRBackend, RequestOptions } from '@angular/http';
 
 
 import { RouterModule, Routes } from '@angular/router';
 import { AlertModule,TabsModule, BsDropdownModule,RatingModule, AccordionModule, TooltipModule  } from 'ngx-bootstrap';
 import { SlimScroll } from 'angular-io-slimscroll';
 import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
+import {SlimLoadingBarService} from 'ng2-slim-loading-bar';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -25,6 +26,7 @@ import { AppStorageService } from './services/app.storage';
 import { sourcesService } from './services/sources.service';
 import { ShowDetailsComponent } from './show-details/show-details.component';
 import {VideoJSComponent} from './video-js/videojs.component'
+import { HttpInterceptor } from 'app/services/app.interceptor';
 
 export const appRoutes:Routes = [
    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -68,7 +70,15 @@ export const appRoutes:Routes = [
     traktService,
     ytsService,
     sourcesService,
-    AppStorageService
+    AppStorageService,
+    {
+      provide: HttpInterceptor,
+      useFactory:
+        (backend: XHRBackend, defaultOptions: RequestOptions, slimLoadingBarService: SlimLoadingBarService) => {
+        return new HttpInterceptor(backend, defaultOptions, slimLoadingBarService);
+      },
+      deps: [ XHRBackend, RequestOptions, SlimLoadingBarService]
+    }
   ],
   bootstrap: [AppComponent]
 })

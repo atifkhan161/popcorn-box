@@ -1,7 +1,6 @@
 import { Component, OnInit, OnChanges, OnDestroy, Input, Output, EventEmitter, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
 import * as webtorrent from 'webtorrent';
 import { _ } from 'underscore';
-import {SlimLoadingBarService} from 'ng2-slim-loading-bar';
 
 import { Movie } from '../model/movie.trakt';
 import { Source } from '../model/sources';
@@ -21,7 +20,7 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
   isThumbnail: boolean;
   sources: Source[];
   streamResult: any;
-  constructor(private sourcesService: sourcesService, private elRef: ElementRef, private slimLoadingBarService: SlimLoadingBarService) { }
+  constructor(private sourcesService: sourcesService, private elRef: ElementRef) { }
 
   ngOnInit() {
     if (this.client) {
@@ -73,7 +72,6 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
   }
   refreshStream() {
     //Streams
-    this.slimLoadingBarService.start();
     this.streamResult = [];
     this.sourcesService.getMovieStreams(this.movie).subscribe(res => {
       this.streamResult.push({
@@ -81,7 +79,6 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
         "type": "mp4"
       });
       this.streamResult = res;
-      this.slimLoadingBarService.complete();      
     });
   }
   watchStream(watchStream) {
