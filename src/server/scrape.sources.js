@@ -26,30 +26,34 @@ let response = {
 };
 
 // Get movies
-router.post('/movie',async (req, res) => {
+router.post('/movie', async(req, res) => {
   var movie = req.body;
-  let urls = [];
+  let promisUrls = [];
   sources[0].forEach(source => {
-    source.getMovie(movie).then(function(srcs){
+    promisUrls.push(source.getMovie(movie).then(function (srcs) {
       if (srcs && srcs.length > 0) {
-        urls.push(srcs);
+        return srcs;
       }
-      res.send(_.flatten(urls));
-    });
+      return [];
+    }));
   });
+  let result = await Promise.all(promisUrls);
+  res.send(_.flatten(result));
 });
 // Get movies
-router.post('/episode',async (req, res) => {
+router.post('/episode', async(req, res) => {
   var show = req.body;
-  let urls = [];
+  let promisUrls = [];
   sources[1].forEach(source => {
-    source.getEpisode(show).then(function(srcs){
+    promisUrls.push(source.getEpisode(show).then(function (srcs) {
       if (srcs && srcs.length > 0) {
-        urls.push(srcs);
+        return srcs;
       }
-      res.send(_.flatten(urls));
-    });
+      return [];
+    }));
   });
+  let result = await Promise.all(promisUrls);
+  res.send(_.flatten(result));
 });
 
 module.exports = router;

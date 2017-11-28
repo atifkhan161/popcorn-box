@@ -33,12 +33,7 @@ export class traktService {
         return this.http.get('/api/movies/' + type)
             // return this.http.request('assets/trakt-movies.json')
             .map((res: Response) => {
-                // if (type != "popular") {
-                //     return _.pluck(res.json(), 'movie');
-                // }
-                // else {
                 return res.json();
-                // }
             });
     }
 
@@ -47,52 +42,32 @@ export class traktService {
         return this.http.get('/api/movies/search/' + query)
             // return this.http.request('assets/trakt-movies.json')
             .map((res: Response) => {
-                // if (type != "popular") {
-                //     return _.pluck(res.json(), 'movie');
-                // }
-                // else {
                 return res.json();
-                // }
             });
     }
     getShows(type: string) {
         this.loading = true;
-        // return this.http.get('/api/movies/' + type)
-        return this.http.request('assets/trakt.shows.json')
+        return this.http.get('/api/shows/' + type)
+            // return this.http.request('assets/trakt.shows.json')
             .map((res: Response) => {
-                // if (type != "popular") {
-                //     return _.pluck(res.json(), 'movie');
-                // }
-                // else {
                 return res.json();
-                // }
             });
     }
     getShowDetails(imdb: string) {
         this.loading = true;
-        // return this.http.get('/api/shows/' + imdb + '/seasons')
-        return this.http.request('assets/trakt.seasons.json')
+        return this.http.get('/api/shows/' + imdb + '/seasons')
+            // return this.http.request('assets/trakt.seasons.json')
             .map((res: Response) => {
-                // if (type != "popular") {
-                //     return _.pluck(res.json(), 'movie');
-                // }
-                // else {
                 return res.json();
-                // }
             });
     }
 
     searchShows(query: string, type: string = "popular") {
         this.loading = true;
-        // return this.http.get('/api/movies/search/' + query)
-        return this.http.request('assets/trakt-movies.json')
+        return this.http.get('/api/movies/search/' + query)
+            // return this.http.request('assets/trakt-movies.json')
             .map((res: Response) => {
-                // if (type != "popular") {
-                //     return _.pluck(res.json(), 'movie');
-                // }
-                // else {
                 return res.json();
-                // }
             });
     }
 
