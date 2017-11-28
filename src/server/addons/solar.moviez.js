@@ -15,47 +15,80 @@ self.source_link = '/ajax/movie_sources/';
 
 function Solar() {
   //Fetch the Homepage url of the movie
-  const _fetchHomePage = async function (url, movie) {
+  const _fetchHomePage = async function (url, movie, show) {
     return axios.get(url).then(resp => {
       let $ = cheerio.load(resp.data);
       let movieHome = {};
       $('.ml-item').children().each((i, elem) => {
         let title = $(elem).attr('title');
-        if (movie.title == title) {
-          const dataInfo = $(elem).attr('data-url');
-          let re = dataInfo.match(/(\d+)/);
+        if (show) {
+          let re = title.match(/(.*?)\s+-\s+Season\s+(\d)/);
           let dataId = -1;
-          if (re) {
-            dataId = re[0];
+          if (re && re.length > 1 && re[1] == show.title && re[2] == show.episode.season) {
+            const dataInfo = $(elem).attr('data-url');
+            let reInfo = dataInfo.match(/(\d+)/);
+            let dataId = -1;
+            if (reInfo) {
+              dataId = reInfo[0];
+            }
+            movieHome = {
+              Url: $(elem).attr('href'),
+              dataInfo: dataInfo,
+              dataId: dataId
+            };
           }
-          movieHome = {
-            Url: $(elem).attr('href'),
-            dataInfo: dataInfo,
-            dataId: dataId
-          };
+        } else {
+          if (movie.title == title) {
+            const dataInfo = $(elem).attr('data-url');
+            let re = dataInfo.match(/(\d+)/);
+            let dataId = -1;
+            if (re) {
+              dataId = re[0];
+            }
+            movieHome = {
+              Url: $(elem).attr('href'),
+              dataInfo: dataInfo,
+              dataId: dataId
+            };
+          }
         }
       });
       return movieHome;
-    }).catch(err=>{
+    }).catch(err => {
       return [];
     });
   };
 
   //Fetch the Homepage url of the movie
-  const _fetchSourcesIds = async function(url) {
+  const _fetchSourcesIds = async function (url, show) {
     return axios.get(url).then(resp => {
       let $ = cheerio.load(resp.data.html);
       let servers = [];
       let lis = $('.pas-list').find('li').each((id, li) => {
-        let server = {
-          id: $(li).attr('data-id'),
-          server: $(li).attr('data-server'),
-          title: $(li).find('a').attr('title')
+        if (show){
+          let epTitle = $(li).find('a').attr('title');
+          let re = epTitle.toLowerCase().match(/episode.*?(\d+).*?/);
+          let dataId = -1;
+          if (re && re.length >0 && re[1] == show.episode.number) {
+            let server = {
+              id: $(li).attr('data-id'),
+              server: $(li).attr('data-server'),
+              title: $(li).find('a').attr('title')
+            }
+            servers.push(server);
+          }
         }
-        servers.push(server)
+        else {
+          let server = {
+            id: $(li).attr('data-id'),
+            server: $(li).attr('data-server'),
+            title: $(li).find('a').attr('title')
+          }
+          servers.push(server);
+        }
       });
       return servers;
-    }).catch(err=>{
+    }).catch(err => {
       return [];
     });
   };
@@ -65,7 +98,7 @@ function Solar() {
         x: resp.data.match(/\_x=['\"]([^\"']+)/)[1],
         y: resp.data.match(/\_y=['\"]([^\"']+)/)[1]
       };
-    }).catch(err=>{
+    }).catch(err => {
       return '';
     });
   }
@@ -76,7 +109,7 @@ function Solar() {
         sources = resp.data.playlist[0].sources;
       }
       return sources;
-    }).catch(err=>{
+    }).catch(err => {
       return {};
     });
   }
@@ -99,61 +132,82 @@ function Solar() {
     });
   };
   return {
-    getMovieAsync: function (movie, cb) {
-      let returnUrls = [];
-      return _fetchHomePage(self.base_link + self.search_link + movie.title.replace(/ /g, "+") + ".html", movie).then(moviePage => {
-        let dataUrl = self.base_link + self.server_link + moviePage.dataId;
-        return _fetchSourcesIds(dataUrl).then(sources => {
-          returnUrls = sources.map(source => {
-            let tokenUrl = self.base_link + self.token_link + source.id + '&mid=' + moviePage.dataId;
-            return _fetchMovieToken(tokenUrl).then(token => {
-              let movieSourceUrl = self.base_link + self.source_link + source.id + '?x=' + token.x + '&y=' + token.y;
-              return _fetchMovieSource(movieSourceUrl).then(source => {
-                return source;
-              })
-            })
-          });
-          return _promise_all(returnUrls).then(res => {
-            return res;
-          });
-        });
-      });
-    },
     getMovie: async function (movie) {
       let returnUrls = [];
-      //Fetchj homepage of movie
+      //Fetch homepage of movie
       let homePage = await _fetchHomePage(self.base_link + self.search_link + movie.title.replace(/ /g, "+") + ".html", movie);
-      if(!homePage.dataId){
+      if (!homePage.dataId) {
         return returnUrls;
       }
       //Load souces 
       let dataUrl = self.base_link + self.server_link + homePage.dataId;
       let souceServers = await _fetchSourcesIds(dataUrl);
-      if (!souceServers || souceServers.length == 0){
+      if (!souceServers || souceServers.length == 0) {
         return returnUrls;
       }
-      let mapSourceUrls = await souceServers.map(async( source) => {
+      let mapSourceUrls = await souceServers.map(async(source) => {
         let tokenUrl = self.base_link + self.token_link + source.id + '&mid=' + homePage.dataId;
         let movieToken = await _fetchMovieToken(tokenUrl);
-        if (!movieToken){
+        if (!movieToken) {
           return [];
         }
         let movieSourceUrl = self.base_link + self.source_link + source.id + '?x=' + movieToken.x + '&y=' + movieToken.y;
         let movieSource = await _fetchMovieSource(movieSourceUrl);
-        if (_.isEmpty(movieSource)){
+        if (_.isEmpty(movieSource)) {
           return [];
         }
         return movieSource;
       });
       returnUrls = await Promise.all(mapSourceUrls);
-      returnUrls = _.filter(_.flatten(returnUrls), url=>{
+      returnUrls = _.filter(_.flatten(returnUrls), url => {
         if (_.isEmpty(url)) {
           return false;
         }
         let keys = _.keys(url);
         return _.contains(keys, "file");
       });
-      returnUrls = _.map(returnUrls, url=>{
+      returnUrls = _.map(returnUrls, url => {
+        url.provider = "Solar Moviez";
+        return url;
+      });
+      return returnUrls;
+    },
+    getEpisode: async function (show) {
+      let returnUrls = [];
+      //Fetch homepage of season
+      let seasonTitle = show.title + ' Season ' + show.episode.season;
+      let homePage = await _fetchHomePage(self.base_link + self.search_link + seasonTitle.replace(/ /g, "+") + ".html", null, show);
+      if (!homePage.dataId) {
+        return returnUrls;
+      }
+      //Load souces 
+      let dataUrl = self.base_link + self.server_link + homePage.dataId;
+      let souceServers = await _fetchSourcesIds(dataUrl, show);
+      if (!souceServers || souceServers.length == 0) {
+        return returnUrls;
+      }
+      let mapSourceUrls = await souceServers.map(async(source) => {
+        let tokenUrl = self.base_link + self.token_link + source.id + '&mid=' + homePage.dataId;
+        let movieToken = await _fetchMovieToken(tokenUrl);
+        if (!movieToken) {
+          return [];
+        }
+        let movieSourceUrl = self.base_link + self.source_link + source.id + '?x=' + movieToken.x + '&y=' + movieToken.y;
+        let movieSource = await _fetchMovieSource(movieSourceUrl);
+        if (_.isEmpty(movieSource)) {
+          return [];
+        }
+        return movieSource;
+      });
+      returnUrls = await Promise.all(mapSourceUrls);
+      returnUrls = _.filter(_.flatten(returnUrls), url => {
+        if (_.isEmpty(url)) {
+          return false;
+        }
+        let keys = _.keys(url);
+        return _.contains(keys, "file");
+      });
+      returnUrls = _.map(returnUrls, url => {
         url.provider = "Solar Moviez";
         return url;
       });

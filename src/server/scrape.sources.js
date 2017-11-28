@@ -29,8 +29,21 @@ let response = {
 router.post('/movie',async (req, res) => {
   var movie = req.body;
   let urls = [];
-  sources.forEach(source => {
+  sources[0].forEach(source => {
     source.getMovie(movie).then(function(srcs){
+      if (srcs && srcs.length > 0) {
+        urls.push(srcs);
+      }
+      res.send(_.flatten(urls));
+    });
+  });
+});
+// Get movies
+router.post('/episode',async (req, res) => {
+  var show = req.body;
+  let urls = [];
+  sources[1].forEach(source => {
+    source.getEpisode(show).then(function(srcs){
       if (srcs && srcs.length > 0) {
         urls.push(srcs);
       }
