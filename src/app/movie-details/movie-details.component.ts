@@ -74,10 +74,6 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
     //Streams
     this.streamResult = [];
     this.sourcesService.getMovieStreams(this.movie).subscribe(res => {
-      this.streamResult.push({
-        "file": "https://storage.googleapis.com/glassy-courage-186317.appspot.com/jax/20.11.17/A01/Valerian.and.the.City.of.a.Thousand.Planets.2017.720p.KORSUB.HDRip.x264.AAC2.0-STUTTERSHIT.mp4",
-        "type": "mp4"
-      });
       this.streamResult = res;
     });
   }

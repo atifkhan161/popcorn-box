@@ -81,7 +81,7 @@
     <div class="panel panel-default">
       <div class="panel-body player-body">
         <div class="thumbnail popbox-player">
-          <video id="popcorn_show_player" class="popbox-player" width="100%" height="250" controls>
+          <video id="popcorn_show_player" class="popcorn-box-player" width="100%" height="250" controls>
             Your browser does not support HTML5 video.
           </video>
           <!-- <videojs [idx]="show_player" [url]="videoUrl"></videojs> -->
@@ -126,7 +126,12 @@
             </div>
           </accordion-group>
           <accordion-group heading="Streams">
-
+            <button class="btn btn-primary float-right" (click)="refreshStream()">refresh</button>
+            <div class="list-group Show--list-group">
+              <a class="list-group-item" *ngFor="let stream of streamResult" (click)="watchStream(stream);" tooltip="{{stream.file}}">
+                {{stream.provider}} | {{stream.label}}
+              </a>
+            </div>
           </accordion-group>
 
         </accordion>

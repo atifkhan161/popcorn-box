@@ -47,7 +47,7 @@
                     <button class="btn btn-primary float-right" (click)="refreshStream()">refresh</button>
                     <div class="list-group Show--list-group">
                       <a class="list-group-item" *ngFor="let stream of streamResult" (click)="watchStream(stream);" tooltip="{{stream.file}}">
-                        {{stream.provider}} | {{stream.lable}}
+                        {{stream.provider}} | {{stream.label}}
                       </a>
                     </div>
                   </accordion-group>

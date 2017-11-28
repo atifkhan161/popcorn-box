@@ -16,8 +16,8 @@ export class ShowsApiService {
 
     seachEztv(imdbId: string) {
         this.loading = true;
-        // return this.http.request('/eztv/search/' + imdbId)
-        return this.http.request('assets/eztv.show.json')
+        return this.http.request('/eztv/search/' + imdbId)
+        // return this.http.request('assets/eztv.show.json')
             .map((res: Response) => res.json());
     }
     seachPopcorn(imdbId: string) {
@@ -53,7 +53,6 @@ export class ShowsApiService {
         const magnetURI = (hash, title) => {
             return `magnet:?xt=urn:btih:${hash}`
         }
-
         return magnetURI(hash, title);
     }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser'
 
 import { traktService } from '../services/trakt.services';
@@ -8,6 +8,7 @@ import { Show } from '../model/show.trakt';
 import { Episode, Season } from '../model/base';
 import { idope } from '../model/idope';
 import * as webtorrent from 'webtorrent';
+import { sourcesService } from '../services/sources.service';
 
 @Component({
   selector: 'show-details',
@@ -28,7 +29,9 @@ export class ShowDetailsComponent implements OnInit {
   popcornTorrents: any;
   popcornTorrent: any;
   file:any;
-  constructor(private trakt: traktService, private showService: ShowsApiService) { }
+  streamResult: any;  
+  player: any;  
+  constructor(private elRef: ElementRef, private trakt: traktService, private showService: ShowsApiService, private sourcesService: sourcesService) { }
 
   ngOnInit() {
     if (this.client) {
@@ -49,6 +52,7 @@ export class ShowDetailsComponent implements OnInit {
     this.showService.seachPopcorn(this.show.ids.imdb).subscribe(torrents => {
       this.popcornTorrents = torrents;
     });
+    this.player = this.elRef.nativeElement.querySelector('.popcorn-box-player');    
   }
 
   selectSeason(season) {
@@ -70,6 +74,8 @@ export class ShowDetailsComponent implements OnInit {
     this.popcornTorrent = this.popcornTorrents.episodes.filter(tor => {
       return tor.season == this.selectedSeason.number && tor.episode == this.selectedEpisode.number;
     });
+    //Source streams
+    this.refreshStream();
   }
 
   watch(source) {
@@ -124,6 +130,21 @@ export class ShowDetailsComponent implements OnInit {
       // .replace('/fanart/', '/preview/');
     }
     return thumbUrl;
+  }
+
+  refreshStream() {
+    //Streams
+    this.streamResult = [];
+    this.sourcesService.getEpisodeStreams(this.show, this.selectedEpisode).subscribe(res => {
+      this.streamResult = res;
+    });
+  }
+  watchStream(watchStream) {
+    let s = document.createElement("source");
+    s.type = watchStream.type;
+    s.src = watchStream.file;
+    this.player.appendChild(s);
+    this.player.play();
   }
 
 }
