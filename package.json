@@ -44,6 +44,7 @@
     "idope-search": "^1.0.0",
     "ng2-slim-loading-bar": "^4.0.0",
     "ngx-bootstrap": "^1.7.1",
+    "puppeteer": "^0.13.0",
     "rxjs": "^5.1.0",
     "trakt.tv": "^6.0.1",
     "underscore": "^1.8.3",

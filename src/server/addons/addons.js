@@ -1,14 +1,17 @@
 const Solar = require('./solar.moviez');
 const yMovies = require('./ymovies');
+const cartoonHd =  require('./cartoonhd');
 
 const sources = [
   movieSources = [
     Solar(),
-    yMovies()
+    yMovies(),
+    cartoonHd()
   ],
   showSources = [
     Solar(),
-    yMovies()
+    yMovies(),
+    cartoonHd()
   ]
 ]
 
