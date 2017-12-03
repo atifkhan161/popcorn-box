@@ -45,6 +45,7 @@ export class ShowDetailsComponent implements OnInit {
     this.trakt.getShowDetails(this.show.ids.imdb).subscribe(seas => {
       this.show.seasons = seas;
       this.selectedSeason = seas[0];
+      this.selectedSeason['active'] = true;
     });
     this.showService.seachEztv(this.show.ids.imdb).subscribe(torrents => {
       this.eztvTorrents = torrents;
