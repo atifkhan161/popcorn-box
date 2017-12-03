@@ -50,6 +50,7 @@
     "trakt.tv": "^6.0.1",
     "underscore": "^1.8.3",
     "video.js": "^6.2.8",
+    "videojs-chromecast": "^2.0.8",
     "webtorrent": "^0.98.20",
     "zone.js": "^0.8.4"
   },

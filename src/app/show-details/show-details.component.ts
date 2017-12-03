@@ -1,5 +1,7 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser'
+import videojs from 'video.js';
+import * as webtorrent from 'webtorrent';
 
 import { traktService } from '../services/trakt.services';
 import { ShowsApiService } from '../services/showapiservices';
@@ -7,7 +9,6 @@ import { ShowsApiService } from '../services/showapiservices';
 import { Show } from '../model/show.trakt';
 import { Episode, Season } from '../model/base';
 import { idope } from '../model/idope';
-import * as webtorrent from 'webtorrent';
 import { sourcesService } from '../services/sources.service';
 
 @Component({
@@ -28,9 +29,9 @@ export class ShowDetailsComponent implements OnInit {
   eztvTorrent: any;
   popcornTorrents: any;
   popcornTorrent: any;
-  file:any;
-  streamResult: any;  
-  player: any;  
+  file: any;
+  streamResult: any;
+  player: any;
   constructor(private elRef: ElementRef, private trakt: traktService, private showService: ShowsApiService, private sourcesService: sourcesService) { }
 
   ngOnInit() {
@@ -52,7 +53,38 @@ export class ShowDetailsComponent implements OnInit {
     this.showService.seachPopcorn(this.show.ids.imdb).subscribe(torrents => {
       this.popcornTorrents = torrents;
     });
-    this.player = this.elRef.nativeElement.querySelector('.popcorn-box-player');    
+    // this.player = this.elRef.nativeElement.querySelector('.popcorn-box-player');    
+    // setup the player via the unique element ID
+    this.player = videojs(document.getElementsByClassName('popcorn-box-player')[0], {}, function () {
+
+      // Store the video object
+      var myPlayer = this, id = myPlayer.id();
+
+      // Make up an aspect ratio
+      var aspectRatio = 264 / 640;
+
+      // internal method to handle a window resize event to adjust the video player
+      function resizeVideoJS() {
+        var width = document.getElementById(id).parentElement.offsetWidth;
+        myPlayer.width(width - 10);
+        myPlayer.height(document.getElementById(id).parentElement.offsetHeight);
+      }
+
+      // Initialize resizeVideoJS()
+      resizeVideoJS();
+
+      // Then on resize call resizeVideoJS()
+      window.onresize = resizeVideoJS;
+    });
+    //Register events
+    this.player.ready(function () {
+      // Store the video object
+      var myPlayer = this;
+      // get
+      var howLoudIsIt = myPlayer.volume();
+      // set
+      // myPlayer.volume(0.5); // Set volume to half
+    });
   }
 
   selectSeason(season) {
@@ -85,12 +117,13 @@ export class ShowDetailsComponent implements OnInit {
       url = source.magnet_url;
     }
     else if (source.url) {
-      url= source.url;
+      url = source.url;
     }
     else {
       // url = this.showService.formMagnetUrl(source.info_hash, source.name);
       url = source.info_hash;
     }
+    this.client = new webtorrent();    
     this.client.add(url, torrent => {
       // Torrents can contain many files. Let's use the .mp4 file
       this.file = torrent.files.find(function (file) {
@@ -101,7 +134,7 @@ export class ShowDetailsComponent implements OnInit {
         return isVideo;
       });
       if (this.file) {
-        this.file.renderTo('video#popcorn_show_player');
+        this.file.renderTo('.popcorn-box-player video');
       }
     });
   }
@@ -120,12 +153,12 @@ export class ShowDetailsComponent implements OnInit {
     }
   }
 
-  getSeasonPoster(season : Season) {
+  getSeasonPoster(season: Season) {
     let thumbUrl = "";
-    let seasonImages = this.show.seasonthumb.filter(thumb =>{
+    let seasonImages = this.show.seasonthumb.filter(thumb => {
       return thumb.season == season.number.toString();
     });
-    if (seasonImages.length >0) {
+    if (seasonImages.length > 0) {
       thumbUrl = seasonImages[0].url
       // .replace('/fanart/', '/preview/');
     }
@@ -140,10 +173,10 @@ export class ShowDetailsComponent implements OnInit {
     });
   }
   watchStream(watchStream) {
-    let s = document.createElement("source");
-    s.type = watchStream.type;
-    s.src = watchStream.file;
-    this.player.appendChild(s);
+    if (!this.client.destroyed) {
+      this.client.destroy();
+    }
+    this.player.src(watchStream.file);
     this.player.play();
   }
 

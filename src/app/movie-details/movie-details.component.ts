@@ -83,6 +83,7 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
 
   watch(source: Source) {
     this.isThumbnail = false;
+    this.client = new webtorrent();
     this.client.add(source.url, torrent => {
       // Torrents can contain many files. Let's use the .mp4 file
       var file = torrent.files.find(function (file) {
