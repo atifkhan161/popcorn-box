@@ -1,5 +1,5 @@
 import { Component, OnInit,Input } from '@angular/core';
-import {Movie} from '../model/movie';
+import { Movie } from '../model/movie.trakt';
 
 @Component({
   selector: 'item-card',
