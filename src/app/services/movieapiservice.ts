@@ -6,12 +6,11 @@ import { Http, Response } from '@angular/http';
 import 'rxjs/Rx'
 
 import {Movie} from '../model/movie';
-import { HttpInterceptor } from 'app/services/app.interceptor';
 
 @Injectable()
 export class MovieApiService {
     loading:boolean;
-    constructor(public http: HttpInterceptor){}
+    constructor(public http: Http){}
 
     getAllMovies(){
         this.loading = true;

@@ -5,14 +5,13 @@ import { Http, Response } from '@angular/http';
 
 import 'rxjs/Rx'
 import { query } from '@angular/core/src/animation/dsl';
-import { HttpInterceptor } from 'app/services/app.interceptor';
 
 
 @Injectable()
 export class ShowsApiService {
     loading: boolean;
 
-    constructor(public http: HttpInterceptor) { }
+    constructor(public http: Http) { }
 
     seachEztv(imdbId: string) {
         this.loading = true;

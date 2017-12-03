@@ -6,14 +6,13 @@ import { _ } from 'underscore';
 import 'rxjs/Rx';
 import { Movie } from '../model/movie.trakt';
 import { Show } from '../model/show.trakt';
-import { HttpInterceptor } from 'app/services/app.interceptor';
 
 @Injectable()
 export class sourcesService {
     loading: boolean;
     header: Headers;
     localServer: string;
-    constructor(public http: HttpInterceptor) {
+    constructor(public http: Http) {
         this.localServer = "http://localhost:8787";
 
         this.header = new Headers({

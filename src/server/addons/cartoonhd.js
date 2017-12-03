@@ -47,7 +47,7 @@ function cartoonHd() {
     getMovie: async function (movie) {
       let returnUrls = [];
       //Fetch homepage of movie
-      let homePage = await _fetchHomePage(self.base_link + self.movie_link + show.title.replace(/ /g, "-") , movie, null);
+      let homePage = await _fetchHomePage(self.base_link + self.movie_link + movie.title.replace(/ /g, "-") , movie, null);
       if (!homePage) {
         return returnUrls;
       }

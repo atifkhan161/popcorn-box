@@ -5,7 +5,6 @@ import { Http, Response, Headers } from '@angular/http';
 import 'rxjs/Rx'
 
 import { Movie } from '../model/movie';
-import { HttpInterceptor } from 'app/services/app.interceptor';
 
 // import * as Trakt from 'trakt.tv';
 
@@ -16,7 +15,7 @@ export class ytsService {
     TRACKERS: string;
     magnetURI: any;
     movies: Movie[];
-    constructor(public http: HttpInterceptor) {
+    constructor(public http: Http) {
 
         this.apiUrl = "https://yts.ag/api/v2/list_movies.json";
         this.TRACKERS = [

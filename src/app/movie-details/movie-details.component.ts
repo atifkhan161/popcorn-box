@@ -35,26 +35,35 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
 
     // this.player = this.elRef.nativeElement.querySelector('.popcorn-box-player');
     // setup the player via the unique element ID
-    this.player = videojs(document.getElementsByClassName('popcorn-box-player')[0], {}, function() {
-      
+    this.player = videojs(document.getElementsByClassName('popcorn-box-player')[0], {}, function () {
+
       // Store the video object
       var myPlayer = this, id = myPlayer.id();
-      
+
       // Make up an aspect ratio
-      var aspectRatio = 264/640;
-      
+      var aspectRatio = 264 / 640;
+
       // internal method to handle a window resize event to adjust the video player
-      function resizeVideoJS(){
+      function resizeVideoJS() {
         var width = document.getElementById(id).parentElement.offsetWidth;
-        myPlayer.width(width);
-        myPlayer.height( document.getElementById(id).parentElement.offsetHeight );
+        myPlayer.width(width - 10);
+        myPlayer.height(document.getElementById(id).parentElement.offsetHeight);
       }
-      
+
       // Initialize resizeVideoJS()
       resizeVideoJS();
-      
+
       // Then on resize call resizeVideoJS()
       window.onresize = resizeVideoJS;
+    });
+    //Register events
+    this.player.ready(function () {
+      // Store the video object
+      var myPlayer = this;
+      // get
+      var howLoudIsIt = myPlayer.volume();
+      // set
+      // myPlayer.volume(0.5); // Set volume to half
     });
   }
   ngOnChanges(changes: SimpleChanges) {
@@ -74,16 +83,15 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
 
   watch(source: Source) {
     this.isThumbnail = false;
-    this.client.add(source.url, this.fetchSuccess);
-  }
-  fetchSuccess(torrent) {
-    // Torrents can contain many files. Let's use the .mp4 file
-    var file = torrent.files.find(function (file) {
-      return file.name.endsWith('.mp4')
+    this.client.add(source.url, torrent => {
+      // Torrents can contain many files. Let's use the .mp4 file
+      var file = torrent.files.find(function (file) {
+        return file.name.endsWith('.mp4')
+      });
+      if (file) {
+        file.renderTo('.popcorn-box-player video');
+      }
     });
-    if (file) {
-      file.renderTo('video#popcorn-box-player');
-    }
   }
   loadSources() {
     //Popcorn Sources
@@ -101,11 +109,10 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
     });
   }
   watchStream(watchStream) {
-    this.isThumbnail = false;
-    let s = document.createElement("source");
-    s.type = watchStream.type;
-    s.src = watchStream.file;
-    this.player.appendChild(s);
+    if (!this.client.destroyed) {
+      this.client.destroy();
+    }
+    this.player.src(watchStream.file);
     this.player.play();
   }
 
