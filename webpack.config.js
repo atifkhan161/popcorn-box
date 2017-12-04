@@ -195,6 +195,7 @@ module.exports = {
             "patterns": [
                 "assets",
                 "fonts",
+                "server",
                 "favicon.ico"
             ],
             "globOptions": {

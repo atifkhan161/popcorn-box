@@ -5,16 +5,17 @@
   <div class="panel panel-default">
     <div class="panel-body">
       <div class="col-xs-12">
-        <div class="thumbnail" *ngIf="isThumbnail">
+        <!-- <div class="thumbnail" *ngIf="isThumbnail">
           <img [src]="movie.moviebackground[0].url" *ngIf="movie.movieposter; else blankImage">
           <ng-template #blankImage>
               <img src="assets/images/blank_mov.jpg">
           </ng-template>
-        </div>
-        <div class="thumbnail" *ngIf="!isThumbnail">
+        </div> -->
+        <div class="thumbnail" >
           <!-- <div id="popcorn-box-player" class="popcorn-box-player" #Popcornplayer style="width:100%;height:100%;"></div> -->
-          <video id="popcorn-box-player" width="100%" height="250" controls>
+          <video id="popcorn-box-player" #popcornBoxPlayer width="100%" height="250" class="popcorn-box-player video-js" controls autoplay [poster]="movie.moviebackground[0].url">
             Your browser does not support HTML5 video.
+            <!-- <source [src]="streamSource" [type]="streamType"> -->
           </video>
         </div>
         <div class="caption row">
@@ -27,21 +28,31 @@
               <h4>Votes : {{movie.votes}}</h4>
               <p>{{movie.overview}}</p>
             </div>
+            <button class="btn btn-default">View trailer</button>
             <div class="col-xs-12">
-
-              <button class="btn btn-default">View trailer</button>
-              <div class="btn-group" dropdown>
-                <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
-                  Watch
-                  <span class="caret"></span>
-                </button>
-                <ul *dropdownMenu class="dropdown-menu" role="menu">
-                  <li role="menuitem" *ngFor="let source of sources">
-                    <a class="dropdown-item" href="javascript:function() { return false; };" (click)="watch(source)">{{source.quality}}</a>
-                  </li>
-                  <li class="divider dropdown-divider"></li>
-                </ul>
-              </div>
+                <accordion>
+                  <accordion-group heading="Popcorn" *ngIf="sources.length > 0">
+                    <div class="list-group Show--list-group" *ngFor="let source of sources">
+                      <a class="dropdown-item" href="javascript:function() { return false; };" (click)="watch(source)">{{source.quality}}</a>
+                    </div>
+                  </accordion-group>
+                  <accordion-group heading="Idope">
+                    <!-- <div class="list-group Show--list-group">
+                      <a class="list-group-item" *ngFor="let torr of idopeResult" (click)="watch(torr);">
+                        {{torr.name}}
+                      </a>
+                    </div> -->
+                  </accordion-group>
+                  <accordion-group heading="Streams">
+                    <button class="btn btn-primary float-right" (click)="refreshStream()">refresh</button>
+                    <div class="list-group Show--list-group">
+                      <a class="list-group-item" *ngFor="let stream of streamResult" (click)="watchStream(stream);" tooltip="{{stream.file}}">
+                        {{stream.provider}} | {{stream.label}}
+                      </a>
+                    </div>
+                  </accordion-group>
+        
+                </accordion>
             </div>
           </div>
         </div>

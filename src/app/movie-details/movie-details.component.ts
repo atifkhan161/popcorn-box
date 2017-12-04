@@ -1,6 +1,8 @@
 import { Component, OnInit, OnChanges, OnDestroy, Input, Output, EventEmitter, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
 import * as webtorrent from 'webtorrent';
 import { _ } from 'underscore';
+import videojs from 'video.js';
+
 import { Movie } from '../model/movie.trakt';
 import { Source } from '../model/sources';
 
@@ -14,12 +16,12 @@ import { sourcesService } from '../services/sources.service';
 export class MovieDetailsComponent implements OnInit, OnChanges {
   @Input() movie: Movie;
   @Output() closeView = new EventEmitter<boolean>();
-  @ViewChild('Popcornplayer') player: ElementRef;
-
+  player: any;
   client: webtorrent;
   isThumbnail: boolean;
   sources: Source[];
-  constructor(private sourcesService: sourcesService) { }
+  streamResult: any;
+  constructor(private sourcesService: sourcesService, private elRef: ElementRef) { }
 
   ngOnInit() {
     if (this.client) {
@@ -30,6 +32,39 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
     this.sources = [];
     //Load sources
     this.loadSources();
+
+    // this.player = this.elRef.nativeElement.querySelector('.popcorn-box-player');
+    // setup the player via the unique element ID
+    this.player = videojs(document.getElementsByClassName('popcorn-box-player')[0], {}, function () {
+
+      // Store the video object
+      var myPlayer = this, id = myPlayer.id();
+
+      // Make up an aspect ratio
+      var aspectRatio = 264 / 640;
+
+      // internal method to handle a window resize event to adjust the video player
+      function resizeVideoJS() {
+        var width = document.getElementById(id).parentElement.offsetWidth;
+        myPlayer.width(width - 10);
+        myPlayer.height(document.getElementById(id).parentElement.offsetHeight);
+      }
+
+      // Initialize resizeVideoJS()
+      resizeVideoJS();
+
+      // Then on resize call resizeVideoJS()
+      window.onresize = resizeVideoJS;
+    });
+    //Register events
+    this.player.ready(function () {
+      // Store the video object
+      var myPlayer = this;
+      // get
+      var howLoudIsIt = myPlayer.volume();
+      // set
+      // myPlayer.volume(0.5); // Set volume to half
+    });
   }
   ngOnChanges(changes: SimpleChanges) {
     if (changes['movie'].previousValue && changes['movie'].previousValue != changes['movie'].currentValue) {
@@ -48,24 +83,43 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
 
   watch(source: Source) {
     this.isThumbnail = false;
-    this.client.add(source.url, this.fetchSuccess);
-  }
-  fetchSuccess(torrent) {
-    // Torrents can contain many files. Let's use the .mp4 file
-    var file = torrent.files.find(function (file) {
-      return file.name.endsWith('.mp4')
+    this.client = new webtorrent();
+    this.client.add(source.url, torrent => {
+      // Torrents can contain many files. Let's use the .mp4 file
+      var file = torrent.files.find(function (file) {
+        return file.name.endsWith('.mp4')
+      });
+      if (file) {
+        file.renderTo('.popcorn-box-player video');
+      }
     });
-    if (file) {
-      file.renderTo('video#popcorn-box-player');
-    }
   }
   loadSources() {
+    //Popcorn Sources
     this.sourcesService.getYifyMovieSources(this.movie.ids.imdb).subscribe(res => {
       this.sources = res["torrents"];
     });
+
+    this.refreshStream();
+  }
+  refreshStream() {
+    //Streams
+    this.streamResult = [];
+    this.sourcesService.getMovieStreams(this.movie).subscribe(res => {
+      this.streamResult = res;
+    });
+  }
+  watchStream(watchStream) {
+    if (!this.client.destroyed) {
+      this.client.destroy();
+    }
+    this.player.src(watchStream.file);
+    this.player.play();
   }
 
   ngOnDestroy() {
-    this.client.destroy();
+    if (!this.client.destroyed) {
+      this.client.destroy();
+    }
   }
 }

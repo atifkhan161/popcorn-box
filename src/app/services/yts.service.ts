@@ -15,7 +15,7 @@ export class ytsService {
     TRACKERS: string;
     magnetURI: any;
     movies: Movie[];
-    constructor(private http: Http) {
+    constructor(public http: Http) {
 
         this.apiUrl = "https://yts.ag/api/v2/list_movies.json";
         this.TRACKERS = [

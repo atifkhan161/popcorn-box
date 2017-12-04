@@ -8629,3 +8629,61 @@ a.list-group-item-danger.active:focus {
 .panel-info .panel-heading {
     border-color: #000
 }
+/* Styling for the Slim Loading Progress Bar container */
+.slim-loading-bar {
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999;
+}
+
+/* Styling for the Slim Loading Progress Bar itself */
+.slim-loading-bar-progress {
+    margin: 0;
+    padding: 0;
+    z-index: 99998;
+    background-color: green;
+    color: green;
+    box-shadow: 0 0 10px 0; /* Inherits the font color */
+    height: 4px;
+    opacity: 0;
+
+    /* Add CSS3 styles for transition smoothing */
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+}
+
+/* Scroll bar changes */
+::-webkit-scrollbar {
+  width: 8px!important;
+  height: 8px!important;
+  background: #f5f6f7!important;
+  border: 1px solid #bababc!important;
+  border-width: 0 1px!important;
+}
+
+::-webkit-scrollbar:horizontal {
+  border: 1px solid #bababc!important;
+  border-width: 1px 0!important;
+}
+
+::-webkit-scrollbar:hover {
+  background: #bababc!important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, .30)!important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, .50)!important;
+}
+
+::-webkit-scrollbar-corner {
+  background: #f5f6f7!important;
+}

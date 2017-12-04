@@ -4,13 +4,15 @@ import { Observable } from 'rxjs/Observable';
 import { Http, Response, Headers } from '@angular/http';
 import { _ } from 'underscore';
 import 'rxjs/Rx';
+import { Movie } from '../model/movie.trakt';
+import { Show } from '../model/show.trakt';
 
 @Injectable()
 export class sourcesService {
     loading: boolean;
     header: Headers;
     localServer: string;
-    constructor(private http: Http) {
+    constructor(public http: Http) {
         this.localServer = "http://localhost:8787";
 
         this.header = new Headers({
@@ -20,7 +22,23 @@ export class sourcesService {
 
     getYifyMovieSources(imdbId : string) {
         this.loading = true;
-        return this.http.request('assets/yify-movie.json')
+        return this.http.get('assets/yify-movie.json')
             .map((res: Response) => res.json());
+    }
+
+    getMovieStreams(movie : Movie) {
+        return this.http.post("/scrape/movie",{
+            "title": movie.title,
+            "year": movie.year,
+            "ids": movie.ids
+        }).map((res: Response) => res.json());
+    }
+    getEpisodeStreams(Show : Show, episode: any) {
+        return this.http.post("/scrape/episode",{
+            "title": Show.title,
+            "year": Show.year,
+            "ids": Show.ids,
+            episode: episode
+        }).map((res: Response) => res.json());
     }
 }
