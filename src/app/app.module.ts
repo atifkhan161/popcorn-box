@@ -8,8 +8,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { AlertModule,TabsModule, BsDropdownModule,RatingModule, AccordionModule, TooltipModule  } from 'ngx-bootstrap';
 import { SlimScroll } from 'angular-io-slimscroll';
 import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
-import {SlimLoadingBarService} from 'ng2-slim-loading-bar';
-import {HttpInterceptorModule} from 'angular2-http-interceptor';
+import {SlimLoadingBarService } from 'ng2-slim-loading-bar';
+import { HttpInterceptorModule } from 'angular2-http-interceptor';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -63,22 +63,24 @@ export const appRoutes:Routes = [
     AccordionModule.forRoot(),
     TooltipModule.forRoot(),
     SlimLoadingBarModule.forRoot(),
-    HttpInterceptorModule.withInterceptors(      [{
-      deps: [],
+    HttpInterceptorModule.withInterceptors([{
+      deps: [SlimLoadingBarService],
       provide: HttpInterceptor,
       useClass: AppInterceptor,
       multi: true
     }])
   ],
   exports: [
-    RouterModule
+    RouterModule,
+    SlimLoadingBarModule
   ],
   providers: [
     ShowsApiService,
     traktService,
     ytsService,
     sourcesService,
-    AppStorageService
+    AppStorageService,
+    AppInterceptor
   ],
   bootstrap: [AppComponent]
 })

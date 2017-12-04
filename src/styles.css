@@ -8657,3 +8657,33 @@ a.list-group-item-danger.active:focus {
     -o-transition: all 0.5s ease-in-out;
     transition: all 0.5s ease-in-out;
 }
+
+/* Scroll bar changes */
+::-webkit-scrollbar {
+  width: 8px!important;
+  height: 8px!important;
+  background: #f5f6f7!important;
+  border: 1px solid #bababc!important;
+  border-width: 0 1px!important;
+}
+
+::-webkit-scrollbar:horizontal {
+  border: 1px solid #bababc!important;
+  border-width: 1px 0!important;
+}
+
+::-webkit-scrollbar:hover {
+  background: #bababc!important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, .30)!important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, .50)!important;
+}
+
+::-webkit-scrollbar-corner {
+  background: #f5f6f7!important;
+}

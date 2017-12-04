@@ -23,8 +23,17 @@ export class AppInterceptor implements IHttpInterceptor {
     }
     before(request: Request): Request {
         if (this.urlCount == 0) {
-            // this.slimLoadingBarService.start();
+            this.slimLoadingBarService.start();
         }
+        this.urlCount++;
         return request;
+    }
+    after(response: Observable<Response>): Observable<Response>{
+        return response.do(r =>{
+            this.urlCount--;
+            if (this.urlCount == 0) {
+                this.slimLoadingBarService.complete();
+            }   
+        });
     }
 }

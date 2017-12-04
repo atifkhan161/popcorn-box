@@ -2,6 +2,8 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser'
 import videojs from 'video.js';
 import * as webtorrent from 'webtorrent';
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+
 
 import { traktService } from '../services/trakt.services';
 import { ShowsApiService } from '../services/showapiservices';
@@ -32,7 +34,8 @@ export class ShowDetailsComponent implements OnInit {
   file: any;
   streamResult: any;
   player: any;
-  constructor(private elRef: ElementRef, private trakt: traktService, private showService: ShowsApiService, private sourcesService: sourcesService) { }
+  constructor(private elRef: ElementRef, private trakt: traktService, private showService: ShowsApiService,
+    private sourcesService: sourcesService, private slimLoadingBarService: SlimLoadingBarService) { }
 
   ngOnInit() {
     if (this.client) {
@@ -124,7 +127,8 @@ export class ShowDetailsComponent implements OnInit {
       // url = this.showService.formMagnetUrl(source.info_hash, source.name);
       url = source.info_hash;
     }
-    this.client = new webtorrent();    
+    this.slimLoadingBarService.start();
+    this.client = new webtorrent();
     this.client.add(url, torrent => {
       // Torrents can contain many files. Let's use the .mp4 file
       this.file = torrent.files.find(function (file) {
@@ -137,6 +141,7 @@ export class ShowDetailsComponent implements OnInit {
       if (this.file) {
         this.file.renderTo('.popcorn-box-player video');
       }
+      this.slimLoadingBarService.complete();
     });
   }
   fetchSuccess(torrent) {
