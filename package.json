@@ -6,8 +6,8 @@
   "scripts": {
     "run": "electron .",
     "start": "concurrently \"webpack-dev-server --port=4200\" \"electron src/entry.live.js\"",
-    "express": "concurrently \"webpack --watch\" \"electron src/entry.express.js\"",
-    "electron": "electron src/entry.express.js --harmony-async-await ",
+    "express": "concurrently \"webpack --watch\" \"electron src/entry.js\"",
+    "electron": "electron src/entry.js --harmony-async-await ",
     "ng": "ng",
     "build": "webpack",
     "watch": "webpack --watch",
