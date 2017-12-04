@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const dbService = require('./db/db.service')();
+
 let axios = require('axios');
 const cachios = require('cachios');
 const _ = require('underscore');
@@ -35,28 +37,32 @@ let response = {
 };
 
 // Get movies
-router.get('/movies/:type', (req, res) => {
+router.get('/movies/:type', async (req, res) => {
   var listType = req.params.type;
-  axios.get(apiUrl + `/movies/${listType}?extended=full&limit=50`, {
+  let dbList = await dbService.fetchMovies(listType);
+  if (dbList.data.length > 0) {
+    res.send(dbList.data);
+  } else {
+    let traktList = await axios.get(apiUrl + `/movies/${listType}?extended=full&limit=50`, {
       ttl: cacheDuration
-    })
-    .then(function (obj) {
-      // res.send(obj.data);
-      _mapImages(obj.data, res);
-    })
-    .catch(function (error) {
-      console.log(error);
-      res.send(error);
     });
+
+    if (traktList.data.length > 0) {
+      let result = await _mapImages(traktList.data);
+      res.send(result);
+      dbService.updateMovies(result, listType);
+    }
+  }
 });
 // Get movies by query params
-router.get('/movies/search/:query', (req, res) => {
+router.get('/movies/search/:query', async (req, res) => {
   var query = req.params.query;
   axios.get(apiUrl + `/movies/popular?extended=full&limit=50&query=${query}`, {
       ttl: cacheDuration
     })
-    .then(function (obj) {
-      _mapImages(obj.data, res);
+    .then(async (obj) => {
+      let result = await _mapImages(obj.data, res);
+      res.send(result);
     })
     .catch(function (error) {
       console.log(error);
@@ -65,19 +71,22 @@ router.get('/movies/search/:query', (req, res) => {
 });
 
 // Get shows
-router.get('/shows/:type', (req, res) => {
+router.get('/shows/:type',async (req, res) => {
   var listType = req.params.type;
-  axios.get(apiUrl + `/shows/${listType}?extended=full&limit=50`, {
+  let dbList = await dbService.fetchShows(listType);
+  if (dbList.data.length > 0) {
+    res.send(dbList.data);
+  } else {
+    let traktList = await axios.get(apiUrl + `/shows/${listType}?extended=full&limit=50`, {
       ttl: cacheDuration
-    })
-    .then(function (obj) {
-      // res.send(obj.data);
-      _mapShowsImages(obj.data, res);
-    })
-    .catch(function (error) {
-      console.log(error);
-      res.send(error);
     });
+
+    if (traktList.data.length > 0) {
+      let result = await _mapShowsImages(traktList.data);
+      res.send(result);
+      dbService.updateShows(result, listType);
+    }
+  }
 });
 // Get shows episodes
 router.get('/shows/:imdb/seasons', (req, res) => {
@@ -94,14 +103,14 @@ router.get('/shows/:imdb/seasons', (req, res) => {
     });
 });
 // Get shows by query params
-router.get('/shows/search/:query', (req, res) => {
+router.get('/shows/search/:query',async (req, res) => {
   var query = req.params.query;
   axios.get(apiUrl + `/shows/popular?extended=full&limit=50&query=${query}`, {
       ttl: cacheDuration
     })
-    .then(function (obj) {
-      // res.send(obj.data);
-      _mapShowsImages(obj.data, res);
+    .then(async (obj) => {
+      let result = await _mapShowsImages(obj.data, res);
+      res.send(result);
     })
     .catch(function (error) {
       res.send(error);
@@ -124,17 +133,17 @@ router.get('/device/code', (req, res) => {
 //Idope Search
 router.post('/idope', (req, res) => {
   var query = req.body.query;
-  
+
   axios.get('https://idope.se/search/' + query)
-  .then(function (obj) {
-    res.send(obj.data);
-  })
-  .catch(function (error) {
-    res.send(error);
-  });
+    .then(function (obj) {
+      res.send(obj.data);
+    })
+    .catch(function (error) {
+      res.send(error);
+    });
 });
 
-function _mapImages(data, res) {
+async function _mapImages(data, res) {
 
   let promises = [];
   _.forEach(data, function (obj) {
@@ -148,35 +157,34 @@ function _mapImages(data, res) {
       ttl: cacheDuration
     }));
   });
-  _promise_all(promises).then(function (args) {
-    let allResult = _.pluck(args, 'data');
-    var movies = _.map(data, function (mov) {
-      var images = _.filter(allResult, function (obj) {
-        if (!obj) {
-          return false;
-        }
-        var imdbId = "";
-        if (_.has(mov, 'movie')) {
-          imdbId = mov.movie.ids.imdb;
-        } else {
-          imdbId = mov.ids.imdb;
-        }
-        return obj.imdb_id == imdbId;
-      });
-      if (images) {
-        if (_.has(mov, 'movie')) {
-          mov = _.extend(mov.movie, images[0]);
-        } else {
-          mov = _.extend(mov, images[0]);
-        }
+  let args = await Promise.all(promises);
+  let allResult = _.pluck(args, 'data');
+  var movies = _.map(data, function (mov) {
+    var images = _.filter(allResult, function (obj) {
+      if (!obj) {
+        return false;
       }
-      return mov;
+      var imdbId = "";
+      if (_.has(mov, 'movie')) {
+        imdbId = mov.movie.ids.imdb;
+      } else {
+        imdbId = mov.ids.imdb;
+      }
+      return obj.imdb_id == imdbId;
     });
-    res.send(movies);
+    if (images) {
+      if (_.has(mov, 'movie')) {
+        mov = _.extend(mov.movie, images[0]);
+      } else {
+        mov = _.extend(mov, images[0]);
+      }
+    }
+    return mov;
   });
+  return movies;
 }
 
-function _mapShowsImages(data, res) {
+async function _mapShowsImages(data, res) {
 
   let promises = [];
   _.forEach(data, function (obj) {
@@ -190,32 +198,31 @@ function _mapShowsImages(data, res) {
       ttl: cacheDuration
     }));
   });
-  _promise_all(promises).then(function (args) {
-    let allResult = _.pluck(args, 'data');
-    var shows = _.map(data, function (tv) {
-      var images = _.filter(allResult, function (obj) {
-        if (!obj) {
-          return false;
-        }
-        var tvdbId = "";
-        if (_.has(tv, 'show')) {
-          tvdbId = tv.show.ids.tvdb;
-        } else {
-          tvdbId = tv.ids.tvdb;
-        }
-        return obj.thetvdb_id == tvdbId;
-      });
-      if (images) {
-        if (_.has(tv, 'show')) {
-          tv = _.extend(tv.show, images[0]);
-        } else {
-          tv = _.extend(tv, images[0]);
-        }
+  let args = await Promise.all(promises);
+  let allResult = _.pluck(args, 'data');
+  var shows = _.map(data, function (tv) {
+    var images = _.filter(allResult, function (obj) {
+      if (!obj) {
+        return false;
       }
-      return tv;
+      var tvdbId = "";
+      if (_.has(tv, 'show')) {
+        tvdbId = tv.show.ids.tvdb;
+      } else {
+        tvdbId = tv.ids.tvdb;
+      }
+      return obj.thetvdb_id == tvdbId;
     });
-    res.send(shows);
+    if (images) {
+      if (_.has(tv, 'show')) {
+        tv = _.extend(tv.show, images[0]);
+      } else {
+        tv = _.extend(tv, images[0]);
+      }
+    }
+    return tv;
   });
+  return shows;
 }
 //Promise all
 _promise_all = function (promises) {
