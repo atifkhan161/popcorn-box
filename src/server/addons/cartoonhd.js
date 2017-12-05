@@ -48,7 +48,7 @@ function cartoonHd() {
     getMovie: async function (movie) {
       let returnUrls = [];
       //Fetch homepage of movie
-      let homePage = await _fetchHomePage(self.base_link + self.movie_link + movie.title.replace(/ /g, "-") , movie, null);
+      let homePage = await _fetchHomePage(self.base_link + self.movie_link + movie.title.toLowerCase().replace(/ /g, "-") , movie, null);
       if (!homePage) {
         return returnUrls;
       }
@@ -59,7 +59,7 @@ function cartoonHd() {
     getEpisode: async function (show) {
       let returnUrls = [];
       //Fetch homepage of movie
-      let homePage = await _fetchHomePage(self.base_link + self.show_link + show.title.replace(/ /g, "-") + '/season/' + show.episode.season + '/episode/' + show.episode.number, null, show);
+      let homePage = await _fetchHomePage(self.base_link + self.show_link + show.title.toLowerCase().replace(/ /g, "-") + '/season/' + show.episode.season + '/episode/' + show.episode.number, null, show);
       if (!homePage) {
         return returnUrls;
       }
