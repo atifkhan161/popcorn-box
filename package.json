@@ -46,7 +46,7 @@
     "nedb": "^1.8.0",
     "nedb-promise": "^2.0.1",
     "ng2-slim-loading-bar": "^4.0.0",
-    "ngx-bootstrap": "^1.7.1",
+    "ngx-bootstrap": "^1.9.3",
     "puppeteer": "^0.13.0",
     "rxjs": "^5.1.0",
     "trakt.tv": "^6.0.1",

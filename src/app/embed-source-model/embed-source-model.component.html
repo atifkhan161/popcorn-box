@@ -1,0 +1,9 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">{{title}}</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <iframe [src]="linkUrl" frameborder="0" width="100%" height="500px" allowfullscreen webkitallowfullscreen></iframe>
+</div>

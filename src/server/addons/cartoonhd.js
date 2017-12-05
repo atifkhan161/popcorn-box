@@ -38,6 +38,7 @@ function cartoonHd() {
       let $ = cheerio.load(data.embed);      
       src.file = $('iframe').attr('src');
       src.type = data.type;
+      src.embed = true;
       src.provider = "Cartoon Hd";
       return src;
     });
