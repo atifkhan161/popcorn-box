@@ -34,4 +34,8 @@
     res.sendFile(path.join(__dirname, '../dist/index.html'));
   });
   app.listen("8787", "localhost");
-// }
+
+//Start socket server
+var server = http.createServer(app);
+var io = require("./server/socket.sources")(server);
+server.listen(8988);

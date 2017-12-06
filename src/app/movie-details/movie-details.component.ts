@@ -7,6 +7,10 @@ import { Movie } from '../model/movie.trakt';
 import { Source } from '../model/sources';
 
 import { sourcesService } from '../services/sources.service';
+import { Observable } from 'rxjs/Observable';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { DomSanitizer } from '@angular/platform-browser';
+import { EmbedSourceModelComponent } from 'app/embed-source-model/embed-source-model.component';
 
 @Component({
   selector: 'movie-details',
@@ -21,7 +25,9 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
   isThumbnail: boolean;
   sources: Source[];
   streamResult: any;
-  constructor(private sourcesService: sourcesService, private elRef: ElementRef) { }
+  socket: any;
+  public modalRef: BsModalRef;
+  constructor(private sourcesService: sourcesService, private elRef: ElementRef, private modalService: BsModalService, public sanitizer: DomSanitizer) { }
 
   ngOnInit() {
     if (this.client) {
@@ -30,6 +36,7 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
     this.isThumbnail = true;
     this.client = new webtorrent();
     this.sources = [];
+    
     //Load sources
     this.loadSources();
 
@@ -106,15 +113,24 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
     //Streams
     this.streamResult = [];
     this.sourcesService.getMovieStreams(this.movie).subscribe(res => {
-      this.streamResult = res;
+      res.forEach(src => {
+       this.streamResult.push(src);      
+      });
     });
   }
   watchStream(watchStream) {
     if (!this.client.destroyed) {
       this.client.destroy();
     }
-    this.player.src(watchStream.file);
-    this.player.play();
+    if(watchStream.embed){
+      this.modalRef = this.modalService.show(EmbedSourceModelComponent, {class: 'modal-lg', backdrop: 'static'});
+      this.modalRef.content.linkUrl = this.sanitizer.bypassSecurityTrustResourceUrl(watchStream.file);
+      this.modalRef.content.titleifr = watchStream.type;
+    }
+    else{
+      this.player.src(watchStream.file);
+      this.player.play();
+    }
   }
 
   ngOnDestroy() {

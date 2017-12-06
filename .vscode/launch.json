@@ -13,11 +13,12 @@
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceRoot}",
+      "protocol": "legacy",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
       "windows": {
         "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
       },
-      "args": ["src/entry.express.js"]
+      "args": ["src/entry.js"]
     }
   ]
 }

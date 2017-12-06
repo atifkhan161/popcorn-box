@@ -37,7 +37,6 @@ export class ShowDetailsComponent implements OnInit {
   streamResult: any;
   player: any;
   public modalRef: BsModalRef;
-  public modalRef2: BsModalRef;
   constructor(private elRef: ElementRef, private trakt: traktService, private showService: ShowsApiService,
     private sourcesService: sourcesService, private slimLoadingBarService: SlimLoadingBarService,
     private modalService: BsModalService, public sanitizer: DomSanitizer) { }
