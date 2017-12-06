@@ -1,0 +1,32 @@
+.panel-body {
+    padding: 0;
+}
+
+.thumbnail {
+    padding: 0;
+    margin-bottom: 0;
+}
+
+.movie-title {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.poster {
+    height: 310px;
+}
+
+.panel-body {
+    border: 1px solid transparent;
+}
+
+
+/*remove padding and add transparent border*/
+
+.panel-body:hover {
+    border: 1px solid #66afe9;
+    -webkit-transition: all .8s ease-in-out;
+    transition: all .8s ease-in-out;
+}

@@ -195,6 +195,7 @@ module.exports = {
             "patterns": [
                 "assets",
                 "fonts",
+                "server",
                 "favicon.ico"
             ],
             "globOptions": {
@@ -206,6 +207,10 @@ module.exports = {
         new CopyWebpackPlugin([{
             context: path.resolve(__dirname, "src"),
             from: "entry.js"
+        }]),
+        new CopyWebpackPlugin([{
+            context: path.resolve(__dirname, "src"),
+            from: "server.js"
         }]),
         new ProgressPlugin(),
         new HtmlWebpackPlugin({

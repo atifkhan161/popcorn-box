@@ -1,15 +1,26 @@
-const {app, BrowserWindow} = require('electron')
+const {
+  app,
+  BrowserWindow
+} = require('electron')
 const path = require('path')
 const url = require('url')
+var http = require('http');
+const server = require('./server');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
-function createWindow () {
+function createWindow() {
   setTimeout(() => {
     // Create the browser window.
-    win = new BrowserWindow({width: 800, height: 600})
+    win = new BrowserWindow({
+      width: 800,
+      height: 600,
+      "web-preferences": {
+        "web-security": false
+      }
+    });
 
     // and load the index.html of the app.
     win.loadURL(url.format({
@@ -17,9 +28,10 @@ function createWindow () {
       protocol: 'http:',
       slashes: true
     }))
-
+    // Open the DevTools.
+    win.webContents.openDevTools()
     // Open the DevTools when in dev mode.
-    if(process.env.NODE_ENV=='development') {
+    if (process.env.NODE_ENV == 'development') {
       win.webContents.openDevTools()
       require('devtron').install()
     }
@@ -32,6 +44,9 @@ function createWindow () {
       win = null
     })
   }, 12000)
+
+  //create server process
+  //   server.createServer(app, require('electron-ipc-server'));
 }
 
 // This method will be called when Electron has finished
@@ -52,7 +67,10 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (win === null) {
-    createWindow()
+    createWindow();
+    // var expressApp = spawn(server.createExpressServer, 'bar', {
+    //   detached: true
+    // });
   }
 })
 

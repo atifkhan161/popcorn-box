@@ -10,11 +10,11 @@ import {Movie} from '../model/movie';
 @Injectable()
 export class MovieApiService {
     loading:boolean;
-    constructor(private http: Http){}
+    constructor(public http: Http){}
 
     getAllMovies(){
         this.loading = true;
-        return  this.http.request('assets/movies-list.json')
+        return  this.http.get('assets/movies-list.json')
                     .map((res:Response)=> res.json());
     }
 }

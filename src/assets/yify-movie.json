@@ -1,0 +1,57 @@
+{
+    "id": 5512,
+    "url": "https://yts.ag/movie/deadpool-2016",
+    "imdb_code": "tt1431045",
+    "title": "Deadpool",
+    "title_english": "Deadpool",
+    "title_long": "Deadpool (2016)",
+    "slug": "deadpool-2016",
+    "year": 2016,
+    "rating": 8,
+    "runtime": 108,
+    "genres": [
+        "Action",
+        "Adventure",
+        "Comedy",
+        "Romance",
+        "Sci-Fi"
+    ],
+    "summary": "This is the origin story of former Special Forces operative turned mercenary Wade Wilson, who after being subjected to a rogue experiment that leaves him with accelerated healing powers, adopts the alter ego Deadpool. Armed with his new abilities and a dark, twisted sense of humor, Deadpool hunts down the man who nearly destroyed his life.",
+    "description_full": "This is the origin story of former Special Forces operative turned mercenary Wade Wilson, who after being subjected to a rogue experiment that leaves him with accelerated healing powers, adopts the alter ego Deadpool. Armed with his new abilities and a dark, twisted sense of humor, Deadpool hunts down the man who nearly destroyed his life.",
+    "synopsis": "This is the origin story of former Special Forces operative turned mercenary Wade Wilson, who after being subjected to a rogue experiment that leaves him with accelerated healing powers, adopts the alter ego Deadpool. Armed with his new abilities and a dark, twisted sense of humor, Deadpool hunts down the man who nearly destroyed his life.",
+    "yt_trailer_code": "ZIM1HydF9UA",
+    "language": "English",
+    "mpa_rating": "R",
+    "background_image": "https://yts.ag/assets/images/movies/deadpool_2016/background.jpg",
+    "background_image_original": "https://yts.ag/assets/images/movies/deadpool_2016/background.jpg",
+    "small_cover_image": "https://yts.ag/assets/images/movies/deadpool_2016/small-cover.jpg",
+    "medium_cover_image": "https://yts.ag/assets/images/movies/deadpool_2016/medium-cover.jpg",
+    "large_cover_image": "https://yts.ag/assets/images/movies/deadpool_2016/large-cover.jpg",
+    "state": "ok",
+    "torrents": [
+        {
+            "url": "magnet:?xt=urn:btih:A1D0C3B0FD52A29D2487027E6B50F27EAF4912C5&dn=Deadpool&tr=udp://open.demonii.com:1337&tr=udp://tracker.istole.it:80&tr=http://tracker.yify-torrents.com/announce&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://exodus.desync.com:6969&tr=http://exodus.desync.com:6969/announce",
+            "hash": "A1D0C3B0FD52A29D2487027E6B50F27EAF4912C5",
+            "quality": "720p",
+            "seeds": 322,
+            "peers": 60,
+            "size": "798.59 MB",
+            "size_bytes": 837382308,
+            "date_uploaded": "2016-04-27 11:45:25",
+            "date_uploaded_unix": 1461771925
+        },
+        {
+            "url": "magnet:?xt=urn:btih:6268ABCCB049444BEE76813177AA46643A7ADA88&dn=Deadpool&tr=udp://open.demonii.com:1337&tr=udp://tracker.istole.it:80&tr=http://tracker.yify-torrents.com/announce&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://exodus.desync.com:6969&tr=http://exodus.desync.com:6969/announce",
+            "hash": "6268ABCCB049444BEE76813177AA46643A7ADA88",
+            "quality": "1080p",
+            "seeds": 269,
+            "peers": 30,
+            "size": "1.65 GB",
+            "size_bytes": 1771674010,
+            "date_uploaded": "2016-04-27 14:49:31",
+            "date_uploaded_unix": 1461782971
+        }
+    ],
+    "date_uploaded": "2016-04-27 11:45:25",
+    "date_uploaded_unix": 1461771925
+}
