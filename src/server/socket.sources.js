@@ -21,6 +21,22 @@ async function createSocket(server) {
       });
     });
 
+    // when the client emits 'scrapeEpisode', this listens and executes
+    socket.on('scrapeEpisode', function (show) {
+      let promisUrls = [];
+      sources[1].forEach(source => {
+        source.getEpisode(show).then(function (srcs) {
+          if (srcs && srcs.length > 0) {
+            // we tell the client to execute 'scrapeEpisode'
+            socket.emit('scrapeEpisode', {
+              show: show,
+              data: _.flatten(srcs)
+            });
+          }
+        });
+      });
+    });
+
   });
 }
 module.exports = createSocket;

@@ -179,7 +179,9 @@ export class ShowDetailsComponent implements OnInit {
     //Streams
     this.streamResult = [];
     this.sourcesService.getEpisodeStreams(this.show, this.selectedEpisode).subscribe(res => {
-      this.streamResult = res;
+      res.forEach(src => {
+       this.streamResult.push(src);      
+      });
     });
   }
   watchStream(watchStream) {

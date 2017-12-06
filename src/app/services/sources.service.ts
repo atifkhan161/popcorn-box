@@ -44,11 +44,20 @@ export class sourcesService {
         .map( obj => obj['data'] );
     }
     getEpisodeStreams(Show : Show, episode: any) {
-        return this.http.post("/scrape/episode",{
+        // return this.http.post("/scrape/episode",{
+        //     "title": Show.title,
+        //     "year": Show.year,
+        //     "ids": Show.ids,
+        //     episode: episode
+        // }).map((res: Response) => res.json());
+        this.socket.emit("scrapeEpisode", {
             "title": Show.title,
             "year": Show.year,
             "ids": Show.ids,
             episode: episode
-        }).map((res: Response) => res.json());
+        });
+        return this.socket
+        .fromEvent<any>("scrapeEpisode")
+        .map( obj => obj['data'] );
     }
 }
