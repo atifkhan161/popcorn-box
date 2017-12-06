@@ -4,6 +4,8 @@ import { Observable } from 'rxjs/Observable';
 import { Http, Response, Headers } from '@angular/http';
 import { _ } from 'underscore';
 import 'rxjs/Rx';
+import { Socket } from 'ng-socket-io';
+
 import { Movie } from '../model/movie.trakt';
 import { Show } from '../model/show.trakt';
 
@@ -12,7 +14,7 @@ export class sourcesService {
     loading: boolean;
     header: Headers;
     localServer: string;
-    constructor(public http: Http) {
+    constructor(private http: Http, private socket: Socket) {
         this.localServer = "http://localhost:8787";
 
         this.header = new Headers({
@@ -27,18 +29,35 @@ export class sourcesService {
     }
 
     getMovieStreams(movie : Movie) {
-        return this.http.post("/scrape/movie",{
+        // return this.http.post("/scrape/movie",{
+        //     "title": movie.title,
+        //     "year": movie.year,
+        //     "ids": movie.ids
+        // }).map((res: Response) => res.json());
+        this.socket.emit("scrapeMovie", {
             "title": movie.title,
             "year": movie.year,
             "ids": movie.ids
-        }).map((res: Response) => res.json());
+        });
+        return this.socket
+        .fromEvent<any>("scrapeMovie")
+        .map( obj => obj['data'] );
     }
     getEpisodeStreams(Show : Show, episode: any) {
-        return this.http.post("/scrape/episode",{
+        // return this.http.post("/scrape/episode",{
+        //     "title": Show.title,
+        //     "year": Show.year,
+        //     "ids": Show.ids,
+        //     episode: episode
+        // }).map((res: Response) => res.json());
+        this.socket.emit("scrapeEpisode", {
             "title": Show.title,
             "year": Show.year,
             "ids": Show.ids,
             episode: episode
-        }).map((res: Response) => res.json());
+        });
+        return this.socket
+        .fromEvent<any>("scrapeEpisode")
+        .map( obj => obj['data'] );
     }
 }

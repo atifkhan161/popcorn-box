@@ -32,7 +32,7 @@
             <div class="col-xs-12">
                 <accordion>
                   <accordion-group heading="Popcorn" *ngIf="sources.length > 0">
-                    <div class="list-group Show--list-group" *ngFor="let source of sources">
+                    <div class="list-group Show--list-group accordion-body" *ngFor="let source of sources">
                       <a class="dropdown-item" href="javascript:function() { return false; };" (click)="watch(source)">{{source.quality}}</a>
                     </div>
                   </accordion-group>
@@ -45,7 +45,7 @@
                   </accordion-group>
                   <accordion-group heading="Streams">
                     <button class="btn btn-primary float-right" (click)="refreshStream()">refresh</button>
-                    <div class="list-group Show--list-group">
+                    <div class="list-group Show--list-group accordion-body">
                       <a class="list-group-item" *ngFor="let stream of streamResult" (click)="watchStream(stream);" tooltip="{{stream.file}}">
                         {{stream.provider}} | {{stream.label}}
                       </a>

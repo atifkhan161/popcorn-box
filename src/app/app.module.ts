@@ -10,6 +10,10 @@ import { SlimScroll } from 'angular-io-slimscroll';
 import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
 import {SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { HttpInterceptorModule } from 'angular2-http-interceptor';
+import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
+
+const config: SocketIoConfig = { url: 'http://localhost:8988', options: {} };
+
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -71,7 +75,8 @@ export const appRoutes:Routes = [
       provide: HttpInterceptor,
       useClass: AppInterceptor,
       multi: true
-    }])
+    }]),
+    SocketIoModule.forRoot(config)
   ],
   exports: [
     RouterModule,
