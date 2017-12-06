@@ -1,9 +1,10 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser'
+import { BrowserModule, DomSanitizer } from '@angular/platform-browser'
 import videojs from 'video.js';
 import * as webtorrent from 'webtorrent';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
-
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/modal-options.class';
 
 import { traktService } from '../services/trakt.services';
 import { ShowsApiService } from '../services/showapiservices';
@@ -12,6 +13,7 @@ import { Show } from '../model/show.trakt';
 import { Episode, Season } from '../model/base';
 import { idope } from '../model/idope';
 import { sourcesService } from '../services/sources.service';
+import { EmbedSourceModelComponent } from 'app/embed-source-model/embed-source-model.component';
 
 @Component({
   selector: 'show-details',
@@ -34,8 +36,11 @@ export class ShowDetailsComponent implements OnInit {
   file: any;
   streamResult: any;
   player: any;
+  public modalRef: BsModalRef;
+  public modalRef2: BsModalRef;
   constructor(private elRef: ElementRef, private trakt: traktService, private showService: ShowsApiService,
-    private sourcesService: sourcesService, private slimLoadingBarService: SlimLoadingBarService) { }
+    private sourcesService: sourcesService, private slimLoadingBarService: SlimLoadingBarService,
+    private modalService: BsModalService, public sanitizer: DomSanitizer) { }
 
   ngOnInit() {
     if (this.client) {
@@ -182,8 +187,15 @@ export class ShowDetailsComponent implements OnInit {
     if (!this.client.destroyed) {
       this.client.destroy();
     }
-    this.player.src(watchStream.file);
-    this.player.play();
+    if(watchStream.embed){
+      this.modalRef = this.modalService.show(EmbedSourceModelComponent, {class: 'modal-lg', backdrop: 'static'});
+      this.modalRef.content.linkUrl = this.sanitizer.bypassSecurityTrustResourceUrl(watchStream.file);
+      this.modalRef.content.titleifr = watchStream.type;
+    }
+    else{
+      this.player.src(watchStream.file);
+      this.player.play();
+    }
   }
 
 }

@@ -5,7 +5,7 @@ import { HttpModule, XHRBackend, RequestOptions } from '@angular/http';
 
 
 import { RouterModule, Routes } from '@angular/router';
-import { AlertModule,TabsModule, BsDropdownModule,RatingModule, AccordionModule, TooltipModule  } from 'ngx-bootstrap';
+import { AlertModule,TabsModule, BsDropdownModule,RatingModule, AccordionModule, TooltipModule, ModalModule  } from 'ngx-bootstrap';
 import { SlimScroll } from 'angular-io-slimscroll';
 import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
 import {SlimLoadingBarService } from 'ng2-slim-loading-bar';
@@ -29,6 +29,7 @@ import { ShowDetailsComponent } from './show-details/show-details.component';
 import {VideoJSComponent} from './video-js/videojs.component'
 import { AppInterceptor } from 'app/services/app.interceptor';
 import { HttpInterceptor } from 'angular2-http-interceptor';
+import { EmbedSourceModelComponent } from './embed-source-model/embed-source-model.component';
 
 export const appRoutes:Routes = [
    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -50,7 +51,8 @@ export const appRoutes:Routes = [
     MovieDetailsComponent,
     DashboardComponent,
     ShowDetailsComponent,
-    ShowCardComponent
+    ShowCardComponent,
+    EmbedSourceModelComponent
   ],
   imports: [
     BrowserModule,
@@ -63,6 +65,7 @@ export const appRoutes:Routes = [
     AccordionModule.forRoot(),
     TooltipModule.forRoot(),
     SlimLoadingBarModule.forRoot(),
+    ModalModule.forRoot(),
     HttpInterceptorModule.withInterceptors([{
       deps: [SlimLoadingBarService],
       provide: HttpInterceptor,
@@ -82,6 +85,7 @@ export const appRoutes:Routes = [
     AppStorageService,
     AppInterceptor
   ],
+  entryComponents: [EmbedSourceModelComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
