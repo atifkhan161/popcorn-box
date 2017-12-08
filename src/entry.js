@@ -46,6 +46,11 @@ function createWindow() {
     win = null
   })
 
+  win.webContents.on('new-window', function(e, url) {
+    console.log('Prevent popup :'+ url)
+    e.preventDefault();
+  });
+
 }
 
 // This method will be called when Electron has finished

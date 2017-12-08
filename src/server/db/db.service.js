@@ -1,3 +1,4 @@
+const _ = require('underscore');
 const Datastore = require('nedb-promise'),
   traktMovieDb = new Datastore({
     filename: './trakt.movies.db',
@@ -6,7 +7,11 @@ const Datastore = require('nedb-promise'),
   traktShowDb = new Datastore({
     filename: './trakt.shows.db',
     autoload: true
-  });
+  }),
+  traktUser = new Datastore({
+    filename: './trakt.user.db',
+    autoload: true
+  })
 
 function dbService() {
   return {
@@ -47,6 +52,21 @@ function dbService() {
       return result ? result : {
         data: []
       };
+    },
+    fetchUser: async function(){
+      let result = await traktUser.findOne({
+        type: 'user'
+      });
+      return result ? result : {};
+    },
+    setUser: async function(data){
+      let doc = {
+        timestamp: new Date(),
+        type: 'user'
+      };
+      doc = _.extend(doc, data);
+      let newDoc = await traktUser.insert(doc);
+      return newDoc;
     }
   }
 }

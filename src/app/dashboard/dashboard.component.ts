@@ -19,9 +19,20 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.isAuthenticated = false;
     let self = this;
-    // this.trakt.getTrendingMovies().subscribe(resp => {
-    //   console.log(resp);
-    // });
+    this.getDeviceCode();
+  }
+  getDeviceCode() {
+    this.trakt.generateDeviceCode().subscribe(resp => {
+      if (resp.authenticated) {
+        this.isAuthenticated = true;
+      }
+      else {
+        this.deviceCode = resp.user_code;
+        this.trakt.pollAccessToken(resp).subscribe(resp => {
+          this.isAuthenticated = true;
+        });
+      }
+    });
   }
 
 }

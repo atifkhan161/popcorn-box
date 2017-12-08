@@ -8,13 +8,14 @@ import 'rxjs/Rx'
 import { Movie } from '../model/movie.trakt';
 import { Show } from '../model/show.trakt';
 import { AppStorageService } from '../services/app.storage';
+import { Socket } from 'ng-socket-io';
 
 @Injectable()
 export class traktService {
     loading: boolean;
     header: Headers;
     localServer: string;
-    constructor(public http: Http, private appStorage: AppStorageService) {
+    constructor(public http: Http, private appStorage: AppStorageService, private socket: Socket) {
         this.localServer = "http://localhost:8787";
 
         this.header = new Headers({
@@ -73,6 +74,12 @@ export class traktService {
     generateDeviceCode() {
         this.loading = true;
         return this.http.get('/api/device/code').map((res: Response) => res.json());
+    }
+
+    pollAccessToken(data) {
+        this.socket.emit("traktAuthenticated", data);
+        return this.socket
+        .fromEvent<any>("traktAuthenticated");
     }
 
     getSelectedShow() {

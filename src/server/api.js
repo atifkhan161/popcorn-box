@@ -117,8 +117,11 @@ router.get('/shows/search/:query',async (req, res) => {
     });
 });
 
+let user;
 // Get device code
-router.get('/device/code', (req, res) => {
+router.get('/device/code',async (req, res) => {
+  user = await dbService.fetchUser();
+  if (_.isEmpty(user)){
   axios.post(apiUrl + '/oauth/device/code', {
       "client_id": clientId
     })
@@ -128,6 +131,11 @@ router.get('/device/code', (req, res) => {
     .catch(function (error) {
       sendError(error, res);
     });
+  }
+  else {
+    res.send({authenticated : true});
+    app.set('user', user);    
+  }
 });
 
 //Idope Search
@@ -242,4 +250,6 @@ _promise_all = function (promises) {
     });
   });
 };
+
+//User list
 module.exports = router;
