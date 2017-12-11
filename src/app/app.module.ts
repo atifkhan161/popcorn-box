@@ -5,7 +5,7 @@ import { HttpModule, XHRBackend, RequestOptions } from '@angular/http';
 
 
 import { RouterModule, Routes } from '@angular/router';
-import { AlertModule,TabsModule, BsDropdownModule,RatingModule, AccordionModule, TooltipModule, ModalModule  } from 'ngx-bootstrap';
+import { AlertModule,TabsModule, BsDropdownModule, RatingModule, AccordionModule, TooltipModule, ModalModule, CarouselModule  } from 'ngx-bootstrap';
 import { SlimScroll } from 'angular-io-slimscroll';
 import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
 import {SlimLoadingBarService } from 'ng2-slim-loading-bar';
@@ -66,6 +66,7 @@ export const appRoutes:Routes = [
     RouterModule.forRoot(appRoutes),
     BsDropdownModule.forRoot(),
     RatingModule.forRoot(),
+    CarouselModule.forRoot(),
     AccordionModule.forRoot(),
     TooltipModule.forRoot(),
     SlimLoadingBarModule.forRoot(),

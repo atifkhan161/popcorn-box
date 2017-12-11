@@ -14,6 +14,7 @@ export class DashboardComponent implements OnInit {
   deviceCode: string;
   verificationUrl: string;
   ytsMovies: Movie[];
+  traktWatchlist: Movie[] = [];
   constructor(private trakt: traktService, private yts: ytsService) { }
 
   ngOnInit() {
@@ -25,13 +26,20 @@ export class DashboardComponent implements OnInit {
     this.trakt.generateDeviceCode().subscribe(resp => {
       if (resp.authenticated) {
         this.isAuthenticated = true;
+        this.fetchDashboardList();
       }
       else {
         this.deviceCode = resp.user_code;
         this.trakt.pollAccessToken(resp).subscribe(resp => {
           this.isAuthenticated = true;
         });
+        this.fetchDashboardList();
       }
+    });
+  }
+  fetchDashboardList(){
+    this.trakt.getWatchlistMovies().subscribe(resp =>{
+      this.traktWatchlist = resp;
     });
   }
 

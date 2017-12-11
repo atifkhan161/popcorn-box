@@ -60,7 +60,8 @@ async function createSocket(server, app) {
                   expiresIn = 0;
                   dbService.setUser(req.data);
                   socket.emit('traktAuthenticated',{ authenticated : true});
-                  app.set('user', user);
+                  axios.defaults.headers.common['Authorization'] = "Bearer " + req.data.access_token;   
+                  app.set('user', req.data);
                   clearInterval(refreshIntervalId);              
                 }            
               })

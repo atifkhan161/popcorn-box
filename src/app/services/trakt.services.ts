@@ -36,6 +36,13 @@ export class traktService {
                 return res.json();
             });
     }
+    getWatchlistMovies() {
+        this.loading = true;
+        return this.http.get('/api/sync/watchlist')
+            .map((res: Response) => {
+                return res.json();
+            });
+    }
 
     searchMovies(query: string, type: string = "popular") {
         this.loading = true;

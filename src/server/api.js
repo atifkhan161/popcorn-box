@@ -134,7 +134,7 @@ router.get('/device/code',async (req, res) => {
   }
   else {
     res.send({authenticated : true});
-    app.set('user', user);    
+    axios.axiosInstance.defaults.headers.common['Authorization'] = "Bearer " + user.access_token;   
   }
 });
 
@@ -165,7 +165,7 @@ async function _mapImages(data, res) {
       ttl: cacheDuration
     }));
   });
-  let args = await Promise.all(promises);
+  let args = await _promise_all(promises);
   let allResult = _.pluck(args, 'data');
   var movies = _.map(data, function (mov) {
     var images = _.filter(allResult, function (obj) {
@@ -206,7 +206,7 @@ async function _mapShowsImages(data, res) {
       ttl: cacheDuration
     }));
   });
-  let args = await Promise.all(promises);
+  let args = await _promise_all(promises);
   let allResult = _.pluck(args, 'data');
   var shows = _.map(data, function (tv) {
     var images = _.filter(allResult, function (obj) {
@@ -233,7 +233,7 @@ async function _mapShowsImages(data, res) {
   return shows;
 }
 //Promise all
-_promise_all = function (promises) {
+_promise_all = async function (promises) {
   return new Promise((resolve, reject) => {
     const results = [];
     let count = 0;
@@ -252,4 +252,38 @@ _promise_all = function (promises) {
 };
 
 //User list
+router.get('/sync/collection', async (req, res) => {
+  var listType = "collection";
+  let dbList = await dbService.fetchMovies(listType);
+  if (dbList.data.length > 0) {
+    res.send(dbList.data);
+  } else {
+    let traktList = await axios.get(apiUrl + `/sync/collection/movies?extended=full`, {
+      ttl: cacheDuration
+    });
+
+    if (traktList.data.length > 0) {
+      let result = await _mapImages(traktList.data);
+      res.send(result);
+      dbService.updateMovies(result, listType);
+    }
+  }
+});
+router.get('/sync/watchlist', async (req, res) => {
+  var listType = "watchlist";
+  let dbList = await dbService.fetchMovies(listType);
+  if (dbList.data.length > 0) {
+    res.send(dbList.data);
+  } else {
+    let traktList = await axios.get(apiUrl + `/sync/watchlist/movies?extended=full`, {
+      ttl: cacheDuration
+    });
+
+    if (traktList.data.length > 0) {
+      let result = await _mapImages(traktList.data);
+      res.send(result);
+      dbService.updateMovies(result, listType);
+    }
+  }
+});
 module.exports = router;
