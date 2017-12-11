@@ -15,6 +15,7 @@ export class DashboardComponent implements OnInit {
   verificationUrl: string;
   ytsMovies: Movie[];
   traktWatchlist: Movie[] = [];
+  traktRecommendation: Movie[] = [];
   constructor(private trakt: traktService, private yts: ytsService) { }
 
   ngOnInit() {
@@ -40,6 +41,9 @@ export class DashboardComponent implements OnInit {
   fetchDashboardList(){
     this.trakt.getWatchlistMovies().subscribe(resp =>{
       this.traktWatchlist = resp;
+    });
+    this.trakt.getRecommendationsMovies().subscribe(resp =>{
+      this.traktRecommendation = resp;
     });
   }
 

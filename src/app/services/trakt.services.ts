@@ -43,7 +43,13 @@ export class traktService {
                 return res.json();
             });
     }
-
+    getRecommendationsMovies() {
+        this.loading = true;
+        return this.http.get('/api/sync/recommendations')
+            .map((res: Response) => {
+                return res.json();
+            });
+    }
     searchMovies(query: string, type: string = "popular") {
         this.loading = true;
         return this.http.get('/api/movies/search/' + query)

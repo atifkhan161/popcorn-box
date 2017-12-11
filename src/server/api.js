@@ -286,4 +286,21 @@ router.get('/sync/watchlist', async (req, res) => {
     }
   }
 });
+router.get('/sync/recommendations', async (req, res) => {
+  var listType = "recommendations";
+  let dbList = await dbService.fetchMovies(listType);
+  if (dbList.data.length > 0) {
+    res.send(dbList.data);
+  } else {
+    let traktList = await axios.get(apiUrl + `/recommendations/movies?extended=full&limit=50`, {
+      ttl: cacheDuration
+    });
+
+    if (traktList.data.length > 0) {
+      let result = await _mapImages(traktList.data);
+      res.send(result);
+      dbService.updateMovies(result, listType);
+    }
+  }
+});
 module.exports = router;

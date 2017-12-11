@@ -6,9 +6,15 @@
       <h1>{{deviceCode}}</h1>
     </div>
     <div *ngIf="isAuthenticated">
-        <h3>Watchlist</h3>
+      <h3>Watchlist</h3>
       <div class="verticle-scroll">
         <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 card-div" *ngFor="let movie of traktWatchlist">
+          <item-card [movie]="movie"></item-card>
+        </div>
+      </div>
+      <h3>Recommendation</h3>
+      <div class="verticle-scroll">
+        <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 card-div" *ngFor="let movie of traktRecommendation">
           <item-card [movie]="movie"></item-card>
         </div>
       </div>
