@@ -101,4 +101,10 @@ export class traktService {
     setSelectedShow(show: Show) {
         this.appStorage.selectedShow = show;
     }
+    getSelectedMovie() {
+        return this.appStorage.selectedMovie;
+    }
+    setSelectedMovie(Movie: Movie) {
+        this.appStorage.selectedMovie = Movie;
+    }
 }

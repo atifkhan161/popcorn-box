@@ -14,10 +14,7 @@
 <div class="row">
   <div [ngClass]="{ 'col-xs-8' : vDetails, 'col-xs-12': !vDetails}">
     <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" *ngFor="let movie of movies">
-      <item-card [movie]="movie" (click)="viewDetails(movie)"></item-card>
+      <item-card (click)="viewDetails(movie)" [routerLink]="['/movie-details']"></item-card>
     </div>
-  </div>
-  <div class="col-xs-4" *ngIf="vDetails">
-    <movie-details (closeView)="toggleView()" [movie]="selectedMovie"></movie-details>
   </div>
 </div>

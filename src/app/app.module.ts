@@ -40,7 +40,8 @@ export const appRoutes:Routes = [
    { path: 'dashboard', component: DashboardComponent},
    { path: 'movies', component: MovieContainerComponent},
    { path: 'tv-shows', component: TvContainerComponent},
-   { path: 'show-details', component: ShowDetailsComponent}
+   { path: 'show-details', component: ShowDetailsComponent},
+   { path: 'movie-details', component: MovieDetailsComponent}
 ]
 
 @NgModule({

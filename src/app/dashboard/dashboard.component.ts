@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { traktService } from '../services/trakt.services';
 import { ytsService } from '../services/yts.service';
-import { Movie } from '../model/movie';
+import { Movie } from 'app/model/movie.trakt';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,6 +10,7 @@ import { Movie } from '../model/movie';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  selectedMovie: Movie;
   isAuthenticated: boolean;
   deviceCode: string;
   verificationUrl: string;
@@ -45,6 +46,11 @@ export class DashboardComponent implements OnInit {
     this.trakt.getRecommendationsMovies().subscribe(resp =>{
       this.traktRecommendation = resp;
     });
+  }
+
+  viewDetails(movie: Movie) {
+    this.selectedMovie = movie;
+    this.trakt.setSelectedMovie(movie);
   }
 
 }
