@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { traktService } from '../services/trakt.services';
 import { ytsService } from '../services/yts.service';
 import { Movie } from 'app/model/movie.trakt';
+import { Show } from 'app/model/show.trakt';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,6 +11,8 @@ import { Movie } from 'app/model/movie.trakt';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  selectedShow: Show;
+  NextToWatchShows: any;
   selectedMovie: Movie;
   isAuthenticated: boolean;
   deviceCode: string;
@@ -46,11 +49,21 @@ export class DashboardComponent implements OnInit {
     this.trakt.getRecommendationsMovies().subscribe(resp =>{
       this.traktRecommendation = resp;
     });
+    
+    this.trakt.getNextToWatchShows().subscribe(resp =>{
+      this.NextToWatchShows = resp;
+    });
   }
 
-  viewDetails(movie: Movie) {
-    this.selectedMovie = movie;
-    this.trakt.setSelectedMovie(movie);
+  viewDetails(movie: Movie, show: Show) {
+    if (movie){
+      this.selectedMovie = movie;
+      this.trakt.setSelectedMovie(movie);
+    }
+    else {
+      this.selectedShow = show;
+      this.trakt.setSelectedShow(show);
+    }
   }
 
 }

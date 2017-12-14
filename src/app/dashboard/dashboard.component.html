@@ -6,6 +6,12 @@
       <h1>{{deviceCode}}</h1>
     </div>
     <div *ngIf="isAuthenticated">
+      <h3>New Episode</h3>
+      <div class="verticle-scroll">
+        <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 card-div" *ngFor="let show of NextToWatchShows">
+          <show-card [show]="show" (click)="viewDetails(null, show)" [routerLink]="['/show-details']"></show-card>
+        </div>
+      </div>
       <h3>Watchlist</h3>
       <div class="verticle-scroll">
         <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 card-div" *ngFor="let movie of traktWatchlist">

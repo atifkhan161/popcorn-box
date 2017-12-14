@@ -43,6 +43,13 @@ export class traktService {
                 return res.json();
             });
     }
+    getNextToWatchShows() {
+        this.loading = true;
+        return this.http.get('/api/sync/nexttowatch')
+            .map((res: Response) => {
+                return res.json();
+            });
+    }
     getRecommendationsMovies() {
         this.loading = true;
         return this.http.get('/api/sync/recommendations')

@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser'
 import videojs from 'video.js';
 import * as webtorrent from 'webtorrent';
+import * as _ from 'underscore';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/modal-options.class';
@@ -29,9 +30,9 @@ export class ShowDetailsComponent implements OnInit {
   client: webtorrent;
   sourceFile: any;
   videoUrl: string;
-  eztvTorrents: any;
+  eztvTorrents: any = [];
   eztvTorrent: any;
-  popcornTorrents: any;
+  popcornTorrents: any = [];
   popcornTorrent: any;
   file: any;
   streamResult: any;
@@ -51,15 +52,36 @@ export class ShowDetailsComponent implements OnInit {
     this.showBackground = this.show.showbackground[0].url;
     this.trakt.getShowDetails(this.show.ids.imdb).subscribe(seas => {
       this.show.seasons = seas;
-      this.selectedSeason = seas[0];
+      if (this.show.season) {
+        this.selectedSeason = _.find(seas, (sea) => {
+          return sea.number == this.show.season;
+        });
+        let episode = _.find(this.selectedSeason.episodes, (epi) => {
+          return epi.number == this.show.episode;
+        });
+        this.selectEpisode(episode);
+      }
+      else {
+        this.selectedSeason = seas[0];
+      }
       this.selectedSeason['active'] = true;
     });
     this.showService.seachEztv(this.show.ids.imdb).subscribe(torrents => {
       this.eztvTorrents = torrents;
+      if (this.selectedEpisode) {
+        this.eztvTorrent = this.eztvTorrents.filter(tor => {
+          return tor.season == this.selectedSeason.number && tor.episode == this.selectedEpisode.number;
+        });
+      }
     });
     this.popcornTorrent = {};
     this.showService.seachPopcorn(this.show.ids.imdb).subscribe(torrents => {
       this.popcornTorrents = torrents;
+      if (this.selectedEpisode) {
+        this.popcornTorrent = this.popcornTorrents.episodes.filter(tor => {
+          return tor.season == this.selectedSeason.number && tor.episode == this.selectedEpisode.number;
+        });
+      }
     });
     // this.player = this.elRef.nativeElement.querySelector('.popcorn-box-player');    
     // setup the player via the unique element ID
@@ -106,14 +128,19 @@ export class ShowDetailsComponent implements OnInit {
         this.idopeResult = res.result.items;
       }
     });
+
     //Eztv filter
-    this.eztvTorrent = this.eztvTorrents.filter(tor => {
-      return tor.season == this.selectedSeason.number && tor.episode == this.selectedEpisode.number;
-    });
+    if (this.eztvTorrents.length > 0) {
+      this.eztvTorrent = this.eztvTorrents.filter(tor => {
+        return tor.season == this.selectedSeason.number && tor.episode == this.selectedEpisode.number;
+      });
+    }
     //Popcorn filter
-    this.popcornTorrent = this.popcornTorrents.episodes.filter(tor => {
-      return tor.season == this.selectedSeason.number && tor.episode == this.selectedEpisode.number;
-    });
+    if (this.popcornTorrents.length > 0) {
+      this.popcornTorrent = this.popcornTorrents.episodes.filter(tor => {
+        return tor.season == this.selectedSeason.number && tor.episode == this.selectedEpisode.number;
+      });
+    }
     //Source streams
     this.refreshStream();
   }
@@ -165,12 +192,17 @@ export class ShowDetailsComponent implements OnInit {
 
   getSeasonPoster(season: Season) {
     let thumbUrl = "";
-    let seasonImages = this.show.seasonthumb.filter(thumb => {
-      return thumb.season == season.number.toString();
-    });
-    if (seasonImages.length > 0) {
-      thumbUrl = seasonImages[0].url
-      // .replace('/fanart/', '/preview/');
+    let seasonImages;
+    if (this.show.seasonthumb) {
+      seasonImages = this.show.seasonthumb.filter(thumb => {
+        return thumb.season == season.number.toString();
+      });
+      if (seasonImages.length > 0) {
+        thumbUrl = seasonImages[0].url
+      }
+    }
+    else if (this.show.tvthumb) {
+      thumbUrl = this.show.tvthumb[0].url
     }
     return thumbUrl;
   }
@@ -180,7 +212,7 @@ export class ShowDetailsComponent implements OnInit {
     this.streamResult = [];
     this.sourcesService.getEpisodeStreams(this.show, this.selectedEpisode).subscribe(res => {
       res.forEach(src => {
-       this.streamResult.push(src);      
+        this.streamResult.push(src);
       });
     });
   }
@@ -188,12 +220,12 @@ export class ShowDetailsComponent implements OnInit {
     if (!this.client.destroyed) {
       this.client.destroy();
     }
-    if(watchStream.embed){
-      this.modalRef = this.modalService.show(EmbedSourceModelComponent, {class: 'modal-lg', backdrop: 'static'});
+    if (watchStream.embed) {
+      this.modalRef = this.modalService.show(EmbedSourceModelComponent, { class: 'modal-lg', backdrop: 'static' });
       this.modalRef.content.linkUrl = this.sanitizer.bypassSecurityTrustResourceUrl(watchStream.file);
       this.modalRef.content.titleifr = watchStream.type;
     }
-    else{
+    else {
       this.player.src(watchStream.file);
       this.player.play();
     }

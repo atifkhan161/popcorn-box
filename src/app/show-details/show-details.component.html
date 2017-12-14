@@ -80,6 +80,10 @@
           </div>
         </div>
         <div class="caption row">
+          <span class="movie-title col-xs-12" *ngIf="selectedEpisode">Ep
+            <span>{{selectedEpisode.number}}</span>
+            <span>{{selectedEpisode.title}}</span>
+          </span>
           <div class="col-xs-12">
             <ul>
               <li>

@@ -39,4 +39,6 @@ export class Show {
     tvbanner: Tvbanner[];
     seasonbanner: Seasonbanner[];
     seasons?: Season[];
+    season?:number;
+    episode?:number;
 }
