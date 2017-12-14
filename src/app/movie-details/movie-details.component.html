@@ -1,35 +1,26 @@
-<div class="col-xs-12" style="padding-bottom:10px">
-  <span class="glyphicon glyphicon-remove pull-right" aria-hidden="true" (click)="cView()"></span>
-</div>
-<div class="col-xs-12">
-  <div class="panel panel-default">
-    <div class="panel-body">
-      <div class="col-xs-12">
-        <!-- <div class="thumbnail" *ngIf="isThumbnail">
-          <img [src]="movie.moviebackground[0].url" *ngIf="movie.movieposter; else blankImage">
-          <ng-template #blankImage>
-              <img src="assets/images/blank_mov.jpg">
-          </ng-template>
-        </div> -->
-        <div class="thumbnail" >
-          <!-- <div id="popcorn-box-player" class="popcorn-box-player" #Popcornplayer style="width:100%;height:100%;"></div> -->
-          <video id="popcorn-box-player" #popcornBoxPlayer width="100%" height="250" class="popcorn-box-player video-js" controls autoplay [poster]="movie.moviebackground[0].url">
-            Your browser does not support HTML5 video.
-            <!-- <source [src]="streamSource" [type]="streamType"> -->
-          </video>
-        </div>
-        <div class="caption row">
-          <h2>{{movie.title}} ({{movie.year}})</h2>
-          <div class="row">
-            <div class="col-xs-12">
-              <h4>Ratings :
-                <span > {{movie.rating}}</span>
-              </h4>
-              <h4>Votes : {{movie.votes}}</h4>
-              <p>{{movie.overview}}</p>
-            </div>
-            <button class="btn btn-default">View trailer</button>
-            <div class="col-xs-12">
+<div class="row">
+  <div class="col-xs-12">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="col-xs-12">
+          <div class="thumbnail">
+            <video id="popcorn-box-player" #popcornBoxPlayer width="100%" height="250" class="popcorn-box-player video-js" controls autoplay
+              [poster]="movieBackground">
+              Your browser does not support HTML5 video.
+            </video>
+          </div>
+          <div class="caption row">
+            <h2>{{movie.title}} ({{movie.year}})</h2>
+            <div class="row">
+              <div class="col-xs-12">
+                <h4>Ratings :
+                  <span> {{movie.rating}}</span>
+                </h4>
+                <h4>Votes : {{movie.votes}}</h4>
+                <p>{{movie.overview}}</p>
+              </div>
+              <button class="btn btn-default">View trailer</button>
+              <div class="col-xs-12">
                 <accordion>
                   <accordion-group heading="Popcorn" *ngIf="sources.length > 0">
                     <div class="list-group Show--list-group accordion-body" *ngFor="let source of sources">
@@ -38,10 +29,10 @@
                   </accordion-group>
                   <accordion-group heading="Idope">
                     <!-- <div class="list-group Show--list-group">
-                      <a class="list-group-item" *ngFor="let torr of idopeResult" (click)="watch(torr);">
-                        {{torr.name}}
-                      </a>
-                    </div> -->
+                            <a class="list-group-item" *ngFor="let torr of idopeResult" (click)="watch(torr);">
+                              {{torr.name}}
+                            </a>
+                          </div> -->
                   </accordion-group>
                   <accordion-group heading="Streams">
                     <button class="btn btn-primary float-right" (click)="refreshStream()">refresh</button>
@@ -51,8 +42,9 @@
                       </a>
                     </div>
                   </accordion-group>
-        
+
                 </accordion>
+              </div>
             </div>
           </div>
         </div>

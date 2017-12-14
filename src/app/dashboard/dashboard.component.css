@@ -1,0 +1,8 @@
+.card-div{
+    display: inline-block;
+    float: none !important;
+}
+.verticle-scroll {
+    overflow-x: auto;
+    white-space: nowrap;
+}

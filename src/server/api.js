@@ -7,6 +7,7 @@ const cachios = require('cachios');
 const _ = require('underscore');
 var Promise = require("bluebird");
 var idope = require('idope-search');
+const moment = require('moment');
 
 var clientId = "42ee8abf7aa0c5c2d275a81877a323dafe105b821dec2785f848bd3d9bf7ccb7";
 var clientSecret = "37c4043b6481b17fd95f8f7cacec18ad21c907296458cbeabfefc824de8b148d";
@@ -18,6 +19,7 @@ var fanartUrl = "http://webservice.fanart.tv/v3/";
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.headers.common['trakt-api-version'] = 2;
 axios.defaults.headers.common['trakt-api-key'] = clientId;
+// axios.defaults.headers.common['Authorization'] = "Bearer e1607c5a57eb902b5b2a31b2e6d2d6e191e91f756e4fb29179ec7bad6bdb7145"; 
 // Error handling
 const sendError = (err, res) => {
   response.status = 501;
@@ -117,8 +119,11 @@ router.get('/shows/search/:query',async (req, res) => {
     });
 });
 
+let user;
 // Get device code
-router.get('/device/code', (req, res) => {
+router.get('/device/code',async (req, res) => {
+  user = await dbService.fetchUser();
+  if (_.isEmpty(user)){
   axios.post(apiUrl + '/oauth/device/code', {
       "client_id": clientId
     })
@@ -128,6 +133,11 @@ router.get('/device/code', (req, res) => {
     .catch(function (error) {
       sendError(error, res);
     });
+  }
+  else {
+    res.send({authenticated : true});
+    axios.axiosInstance.defaults.headers.common['Authorization'] = "Bearer " + user.access_token;   
+  }
 });
 
 //Idope Search
@@ -157,7 +167,7 @@ async function _mapImages(data, res) {
       ttl: cacheDuration
     }));
   });
-  let args = await Promise.all(promises);
+  let args = await _promise_all(promises);
   let allResult = _.pluck(args, 'data');
   var movies = _.map(data, function (mov) {
     var images = _.filter(allResult, function (obj) {
@@ -198,7 +208,7 @@ async function _mapShowsImages(data, res) {
       ttl: cacheDuration
     }));
   });
-  let args = await Promise.all(promises);
+  let args = await _promise_all(promises);
   let allResult = _.pluck(args, 'data');
   var shows = _.map(data, function (tv) {
     var images = _.filter(allResult, function (obj) {
@@ -225,7 +235,7 @@ async function _mapShowsImages(data, res) {
   return shows;
 }
 //Promise all
-_promise_all = function (promises) {
+_promise_all = async function (promises) {
   return new Promise((resolve, reject) => {
     const results = [];
     let count = 0;
@@ -242,4 +252,127 @@ _promise_all = function (promises) {
     });
   });
 };
+
+//User list
+router.get('/sync/collection', async (req, res) => {
+  var listType = "collection";
+  let dbList = await dbService.fetchMovies(listType);
+  if (dbList.data.length > 0) {
+    res.send(dbList.data);
+  } else {
+    let traktList = await axios.get(apiUrl + `/sync/collection/movies?extended=full`, {
+      ttl: cacheDuration
+    });
+
+    if (traktList.data.length > 0) {
+      let result = await _mapImages(traktList.data);
+      res.send(result);
+      dbService.updateMovies(result, listType);
+    }
+  }
+});
+router.get('/sync/watchlist', async (req, res) => {
+  var listType = "watchlist";
+  let dbList = await dbService.fetchMovies(listType);
+  if (dbList.data.length > 0) {
+    res.send(dbList.data);
+  } else {
+    let traktList = await axios.get(apiUrl + `/sync/watchlist/movies?extended=full`, {
+      ttl: cacheDuration
+    });
+
+    if (traktList.data.length > 0) {
+      let result = await _mapImages(traktList.data);
+      res.send(result);
+      dbService.updateMovies(result, listType);
+    }
+  }
+});
+router.get('/sync/recommendations', async (req, res) => {
+  var listType = "recommendations";
+  let dbList = await dbService.fetchMovies(listType);
+  if (dbList.data.length > 0) {
+    res.send(dbList.data);
+  } else {
+    let traktList = await axios.get(apiUrl + `/recommendations/movies?extended=full&limit=50`, {
+      ttl: cacheDuration
+    });
+
+    if (traktList.data.length > 0) {
+      let result = await _mapImages(traktList.data);
+      res.send(result);
+      dbService.updateMovies(result, listType);
+    }
+  }
+});
+
+router.get('/sync/nexttowatch', async (req, res) => {
+  var listType = "nexttowatch";
+  let listResult = [];
+  let watchedList;
+  let dbList = await dbService.fetchShows(listType);
+  if (dbList.data.length > 0) {
+    res.send(dbList.data);
+  } else {
+    watchedList = await axios.get(apiUrl + `/users/me/watched/shows?extended=full`, {
+      ttl: cacheDuration
+    });
+    let promises = await _.map(watchedList.data, async (show) => {
+      let lastSeason = show.seasons[show.seasons.length - 1];
+      let lastEpisode = lastSeason.episodes[lastSeason.episodes.length - 1];
+      //check for next Episode
+      return await _nextEpisode(show, lastSeason.number, lastEpisode.number + 1);
+    });
+    let args = await _promise_all(promises);
+    let promises2 = args.map(async obj => {
+      if (obj.empty) {
+      }
+      else if (obj.season) {
+        listResult.push(obj);
+      }
+      else if (obj.lastSeason) {
+        return await _nextEpisode(obj.show, obj.lastSeason + 1, 1);
+      }
+    });
+    let args2 = await _promise_all(promises2);
+    _.each(args2, async (rsp) => {
+      if (rsp && rsp.season) {
+        listResult.push(rsp);
+      }
+    });
+    let result = await _mapShowsImages(listResult);
+    dbService.updateShows(result, listType);
+    res.send(result);
+  }
+});
+const _nextEpisode = async function(show, lastSeason, lastEpisode){
+  let rslSrc, rjlSrc;
+  let srcPromise = new Promise(async (resolve, reject) => {
+    rslSrc = resolve;
+    rjlSrc = reject;
+  });
+  let nextEpisode = await axios.get(apiUrl + `/shows/${show.show.ids.trakt}/seasons/${lastSeason}/episodes/${lastEpisode}?extended=full`, {
+    ttl: cacheDuration
+  }).catch((error)=>{
+    let data = {
+      "show" : show, "lastSeason" : lastSeason
+    }
+    return { "data" : data };
+  })
+  if (!_.isEmpty(nextEpisode.data) && nextEpisode.data.first_aired != null && moment().isSameOrAfter(nextEpisode.data.first_aired)) {
+    //Add episode to list
+    let showToAdd = show.show;
+    showToAdd.season =  lastSeason;
+    showToAdd.episode = lastEpisode;
+    rslSrc(showToAdd);
+  }
+  else if (nextEpisode.data.lastSeason) {
+    //check for new season
+    rslSrc(nextEpisode.data);
+  }
+  else {
+    rslSrc({ empty : true })
+  }
+  return srcPromise;  
+}
 module.exports = router;

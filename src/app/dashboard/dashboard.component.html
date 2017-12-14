@@ -1,17 +1,29 @@
-<div *ngIf="!isAuthenticated">
-  <p>
-    Authenticate to proceed!</p>
-  <h1>{{deviceCode}}</h1>
-</div>
-<div *ngIf="isAuthenticated">
-
-</div>
-
 <div class="panel panel-default">
-  <div class="panel-heading">YTS Movies</div>
+  <div class="panel-heading">Trakt</div>
   <div class="panel-body">
-    <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2" *ngFor="let movie of ytsMovies">
-      <item-card [movie]="movie" (click)="viewDetails(movie)"></item-card>
+    <div *ngIf="!isAuthenticated">
+      <p>Visit https://trakt.tv/activate and enter the code to connect.</p>
+      <h1>{{deviceCode}}</h1>
+    </div>
+    <div *ngIf="isAuthenticated">
+      <h3>New Episode</h3>
+      <div class="verticle-scroll">
+        <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 card-div" *ngFor="let show of NextToWatchShows">
+          <show-card [show]="show" (click)="viewDetails(null, show)" [routerLink]="['/show-details']"></show-card>
+        </div>
+      </div>
+      <h3>Watchlist</h3>
+      <div class="verticle-scroll">
+        <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 card-div" *ngFor="let movie of traktWatchlist">
+          <item-card [movie]="movie" (click)="viewDetails(movie)" [routerLink]="['/movie-details']"></item-card>
+        </div>
+      </div>
+      <h3>Recommendation</h3>
+      <div class="verticle-scroll">
+        <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 card-div" *ngFor="let movie of traktRecommendation">
+          <item-card [movie]="movie" (click)="viewDetails(movie)" [routerLink]="['/movie-details']"></item-card>
+        </div>
+      </div>
     </div>
   </div>
 </div>

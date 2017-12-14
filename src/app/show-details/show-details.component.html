@@ -80,20 +80,12 @@
           </div>
         </div>
         <div class="caption row">
+          <span class="movie-title col-xs-12" *ngIf="selectedEpisode">Ep
+            <span>{{selectedEpisode.number}}</span>
+            <span>{{selectedEpisode.title}}</span>
+          </span>
           <div class="col-xs-12">
             <ul>
-              <li>
-                <h3>Season overview:</h3>
-              </li>
-              <li>
-                <h6>Sheriff's deputy Rick Grimes awakens from a coma to find a post-apocalyptic world dominated by flesh-eating
-                  zombies. He sets out to find his family and encounters many other survivors along the way.</h6>
-              </li>
-            </ul>
-            <ul>
-              <li>
-                <h3>Episode overview:</h3>
-              </li>
               <li>
                 <h6 *ngIf="popcornTorrent.length > 0">{{popcornTorrent[0].synopsis}}</h6>
               </li>

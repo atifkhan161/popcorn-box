@@ -11,6 +11,7 @@ import { Observable } from 'rxjs/Observable';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { DomSanitizer } from '@angular/platform-browser';
 import { EmbedSourceModelComponent } from 'app/embed-source-model/embed-source-model.component';
+import { traktService } from 'app/services/trakt.services';
 
 @Component({
   selector: 'movie-details',
@@ -18,8 +19,9 @@ import { EmbedSourceModelComponent } from 'app/embed-source-model/embed-source-m
   styleUrls: ['./movie-details.component.css']
 })
 export class MovieDetailsComponent implements OnInit, OnChanges {
-  @Input() movie: Movie;
-  @Output() closeView = new EventEmitter<boolean>();
+  movieBackground: string = "";
+  movie: Movie;
+  // @Output() closeView = new EventEmitter<boolean>();
   player: any;
   client: webtorrent;
   isThumbnail: boolean;
@@ -27,7 +29,9 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
   streamResult: any;
   socket: any;
   public modalRef: BsModalRef;
-  constructor(private sourcesService: sourcesService, private elRef: ElementRef, private modalService: BsModalService, public sanitizer: DomSanitizer) { }
+  constructor(private sourcesService: sourcesService, private elRef: ElementRef, 
+              private modalService: BsModalService, public sanitizer: DomSanitizer,
+              private trakt: traktService) { }
 
   ngOnInit() {
     if (this.client) {
@@ -37,6 +41,11 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
     this.client = new webtorrent();
     this.sources = [];
     
+    //Fetch movie object
+    this.movie = this.trakt.getSelectedMovie();
+
+    this.movieBackground = this.movie.moviebackground ? this.movie.moviebackground[0]['url']: this.movie.movieposter[0]['url'];
+
     //Load sources
     this.loadSources();
 
@@ -84,7 +93,7 @@ export class MovieDetailsComponent implements OnInit, OnChanges {
   }
 
   cView() {
-    this.closeView.emit();
+    // this.closeView.emit();
     this.client.destroy();
   }
 

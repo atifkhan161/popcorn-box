@@ -1,7 +1,8 @@
 {
   "name": "popcorn-box",
+  "productName": "MaddyBox",
   "main": "dist/entry.js",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "MIT",
   "scripts": {
     "run": "electron .",
@@ -43,6 +44,7 @@
     "core-js": "^2.4.1",
     "express": "^4.16.2",
     "idope-search": "^1.0.0",
+    "moment": "^2.19.4",
     "nedb": "^1.8.0",
     "nedb-promise": "^2.0.1",
     "ng-socket-io": "^0.2.0",
@@ -106,5 +108,8 @@
     "url-loader": "^0.5.7",
     "webpack": "^2.3.2",
     "webpack-dev-server": "~2.3.0"
-  }
+  },
+  "bundledDependencies": [
+    "express"
+  ]
 }

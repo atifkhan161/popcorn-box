@@ -35,7 +35,8 @@ export class MovieContainerComponent implements OnInit {
 
   viewDetails(movie: Movie) {
     this.selectedMovie = movie;
-    this.vDetails = true;
+    this.trakt.setSelectedMovie(movie);
+    // this.vDetails = true;
   }
 
   toggleView() {

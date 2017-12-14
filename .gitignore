@@ -44,3 +44,5 @@ Thumbs.db
 
 #NeDb files
 *.db
+popcorn-box-0.0.0.tgz
+/packages
